@@ -32,5 +32,12 @@ namespace Migracja
             else
                 return dict.Keys.Max() + 1;
         }*/
+
+        public static List<int> GetSortedKeyList(this Dictionary<int, Vector_Rectangle> dict)
+        {
+            List<int> result = dict.Keys.ToList();
+            result.Sort();
+            return result;
+        }
     }
 }

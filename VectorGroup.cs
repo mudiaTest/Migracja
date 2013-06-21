@@ -12,16 +12,22 @@ namespace Migracja
     //TDynamicPointArray = Vector_Gen[];
     //TDynamicPxColorPointArray = ColorPx[,];
 
-    class  EdgeList: Dictionary<int, VectorRectangeGroup>
+    class EdgeList : Dictionary<int, EdgeSliceList>
     {
-        private int maxKey;
+        private int fMaxKey;
+
+        internal int maxKey {
+            get { return fMaxKey; }
+        }
+  
         internal int NextKey()
         {
-            return maxKey++;
+            return ++fMaxKey;
         }
+
         public EdgeList()
         {
-            maxKey = 0;
+            fMaxKey = -1;
         }
     }
 
@@ -32,15 +38,15 @@ namespace Migracja
         //leftTopGeo, rightTopGeo, leftBottomGeo, rightBottomGeo: Double;
         //lista obiektów Vector_Rectangle tworzących krawędź (self, czyli grupy obiektów Vector_Rectangle). 
         //Kolejnośc wyznaczają klucze
-        public VectorRectangeGroup edgeList{get;set;}
+        public EdgeSliceList edgeSliceList { get; set; }
         //lista wewnętrznych krawędzi. Każda z nich ma konstrukcję jak edgePxList
         public EdgeList innerEdgesList { get; set; }
         //lista krawędzi punktów Double
         public Dictionary<int, GeoPoint> edgeGeoList { get; set; }
         //lista krawędzi punktów-pixeli (kolejnych), które zostały poddane uproszczaniu - jest to okrojona edgePxList
-        public VectorRectangeGroup simplifiedEdgeList{get;set;}
+        public EdgeSliceList simplifiedEdgeList { get; set; }
         //lista uroszczonych wewnętrznych krawędzi. Każda z nich ma konstrukcję jak edgePxList
-        public Dictionary<int, VectorRectangeGroup> simplifiedInnerEdgesList{get;set;}
+        public Dictionary<int, EdgeSliceList> simplifiedInnerEdgesList { get; set; }
 
         //niepotrzebe bo obiekt jedt grupą samą w sobie
         //lista 'kwadratów' należących do grupy
@@ -57,20 +63,19 @@ namespace Migracja
         internal Point[] pointArrFromFullEdge = null;
         internal Point[] pointArrFromSimplifiedEdge = null;
 
-        Point[] GetEdgeListAsArray(float aScale)
+        Point[] GetEdgeListAsArray(float aScale) 
         {
             Debug.Assert(aScale >= 1, "GetEdgeListAsArray nie może utworzyć polygonu dla skali <= 1.");
 
-            Point[] result = new Point[edgeList.Count];
+            Point[] result = new Point[edgeSliceList.vectorRectangleFullList.Count];
             int i = 0;
-            foreach(int key in edgeList.GetSortedKeyList())
+            foreach (int key in edgeSliceList.vectorRectangleFullList.GetSortedKeyList())
             {
-                result[i] = edgeList[key].p1;
+                result[i] = edgeSliceList.vectorRectangleFullList[key].p1;
                 i++;
             }
-           // jkl;
-            //
             return result;
+            return null;
         }
 
         //in: dwa KOLEJNE punkty poruszające się po liniach Hor i Ver
@@ -370,50 +375,64 @@ namespace Migracja
 
         public VectoredRectangleGroup()
         {
-            edgeList = new VectorRectangeGroup();
+            edgeSliceList = new EdgeSliceList(this);
             innerEdgesList = new EdgeList();
         }
 
-        //tworzy tablicę punktów z ponktów zawartych w edgePxList
-        public List<GeoPoint> MakeVectorEdge(VectorRectangeGroup aEdgePxList,
+        //tworzy tablicę punktów z punktów zawartych w edgeSliceList
+        public List<GeoPoint> MakeVectorEdge(VectorRectangleList aEdgeVectorRectangleList,
                                              ColorPx[][] aColorArr,
                                              bool aBlOnlyFillColorArr,
                                              float aMultiX = 1, float aMultiY = 1,
                                              float aDisplaceX = 0, float aDisplaceY = 0)
         {
-            List<GeoPoint> result = new List<GeoPoint>(aEdgePxList.Count * 3);
+            List<GeoPoint> result = new List<GeoPoint>(aEdgeVectorRectangleList.Count * 3);
+
             int counter = 0;
             //if (!aBlOnlyFillColorArr)
             //    SetLength(result, aEdgePxList.Count*3);
-            if (aEdgePxList.Count > 1)
+
+            if (aEdgeVectorRectangleList.Count > 1)
             {
-                //SetLength(result, self.rectList.Count+30);
-                Point o1 = aEdgePxList[aEdgePxList.Count-1].GetP(0);
-                Point o2 = aEdgePxList[0].GetP(0);
-                Point o3 = aEdgePxList[1].GetP(0);
-                MakePartEdge(o1, o2, o3, ref counter, result, aMultiX, aMultiY, aDisplaceX, aDisplaceY, aColorArr, aBlOnlyFillColorArr);
+                VectorRectangleList list;
+                //foreach(KeyValuePair<int, EdgeSlice> pair in aEdgeSliceList)
+                //{
+                    //list = pair.Value.vectorRectangleList(aEdgeSliceList.parent);
+                //if (aEdgeVectorRectangleList.Count >= 3)
+                    //{
+                        //SetLength(result, self.rectList.Count+30);
+                        Point o1 = aEdgeVectorRectangleList[aEdgeVectorRectangleList.Count - 1].GetP(0);
+                        Point o2 = aEdgeVectorRectangleList[0].GetP(0);
+                        Point o3 = aEdgeVectorRectangleList[1].GetP(0);
+                        MakePartEdge(o1, o2, o3, ref counter, result, aMultiX, aMultiY, aDisplaceX, aDisplaceY,
+                                     aColorArr, aBlOnlyFillColorArr);
 
-                for (int i=1; i<aEdgePxList.Count-1; i++)
-                {
-                    o1 = aEdgePxList[i-1].GetP(0);
-                    o2 = aEdgePxList[i].GetP(0);
-                    o3 = aEdgePxList[i+1].GetP(0);
-                    MakePartEdge(o1, o2, o3, ref counter, result, aMultiX, aMultiY, aDisplaceX, aDisplaceY, aColorArr, aBlOnlyFillColorArr);
-                };
+                        for (int i = 1; i < aEdgeVectorRectangleList.Count - 1; i++)
+                        {
+                            o1 = aEdgeVectorRectangleList[i - 1].GetP(0);
+                            o2 = aEdgeVectorRectangleList[i].GetP(0);
+                            o3 = aEdgeVectorRectangleList[i + 1].GetP(0);
+                            MakePartEdge(o1, o2, o3, ref counter, result, aMultiX, aMultiY, aDisplaceX, aDisplaceY,
+                                         aColorArr, aBlOnlyFillColorArr);
+                        }
+                        ;
 
-                o1 = aEdgePxList[aEdgePxList.Count-2].GetP(0);
-                o2 = aEdgePxList[aEdgePxList.Count-1].GetP(0);
-                o3 = aEdgePxList[0].GetP(0);
-                MakePartEdge(o1, o2, o3, ref counter, result, aMultiX, aMultiY, aDisplaceX, aDisplaceY, aColorArr, aBlOnlyFillColorArr);
-                //SetLength(result, Min(counter,10));
-                //if (!aBlOnlyFillColorArr) then
-                //   SetLength(result, counter);
+                        o1 = aEdgeVectorRectangleList[aEdgeVectorRectangleList.Count - 2].GetP(0);
+                        o2 = aEdgeVectorRectangleList[aEdgeVectorRectangleList.Count - 1].GetP(0);
+                        o3 = aEdgeVectorRectangleList[0].GetP(0);
+                        MakePartEdge(o1, o2, o3, ref counter, result, aMultiX, aMultiY, aDisplaceX, aDisplaceY,
+                                     aColorArr, aBlOnlyFillColorArr);
+                        //SetLength(result, Min(counter,10));
+                        //if (!aBlOnlyFillColorArr) then
+                        //   SetLength(result, counter);
+                    //}
+                //}
             } 
             else
             {
                 //if (!aBlOnlyFillColorArr) 
                 //    SetLength(result, 4);
-                MakePartEdgeForOnePoint(aEdgePxList[0].GetP(0),
+                MakePartEdgeForOnePoint(aEdgeVectorRectangleList[0].GetP(0),
                                         result, aMultiX, aMultiY, aDisplaceX, aDisplaceY,
                                         aColorArr, aBlOnlyFillColorArr);
                 counter = 4;
@@ -423,18 +442,18 @@ namespace Migracja
 
         internal void MakePointArrFromFullEdge(float aDpScale, float aDisplaceX, float aDisplaceY)
         {
-            pointArrFromFullEdge = MakePointArrFromEdge(edgeList, aDpScale, aDisplaceX, aDisplaceY);
+            pointArrFromFullEdge = MakePointArrFromEdge(edgeSliceList, aDpScale, aDisplaceX, aDisplaceY);
         }
 
         internal void MakePointArrFromSimplifiedEdge(float aDpScale, float aDisplaceX, float aDisplaceY)
         {
-            pointArrFromSimplifiedEdge = MakePointArrFromEdge(simplifiedEdgeList, aDpScale, aDisplaceX, aDisplaceY);
+            pointArrFromSimplifiedEdge = MakePointArrFromEdge(edgeSliceList, aDpScale, aDisplaceX, aDisplaceY);
         }
 
-            private Point[] MakePointArrFromEdge(VectorRectangeGroup aEdgeList, float aDpScale, float aDisplaceX, float aDisplaceY)
+        private Point[] MakePointArrFromEdge(EdgeSliceList aEdgeList, float aDpScale, float aDisplaceX, float aDisplaceY)
             {
                 //Point[] result = new Point[aEdgePxList.Count * 3];
-                List<GeoPoint> pxPointList = MakeVectorEdge(aEdgeList, GetColorArr(), false, aDpScale, aDpScale, aDisplaceX, aDisplaceY);
+                List<GeoPoint> pxPointList = MakeVectorEdge(aEdgeList.vectorRectangleFullList, GetColorArr(), false, aDpScale, aDpScale, aDisplaceX, aDisplaceY);
                 return PointList2PxArray(pxPointList);
             }
 
@@ -460,72 +479,7 @@ namespace Migracja
                 return result;
             }
 
-        internal void MakeSimplifyVectorEdge()
-        {
-            //to do
-            simplifiedEdgeList = new VectorRectangeGroup();
-            List<int> sortedKeyList = edgeList.GetSortedKeyList();
-            Vector_Rectangle startRect = edgeList[sortedKeyList[0]]; // punkt, wobec którego sprawdzamy położenie kolejnych
-            Vector_Rectangle middleRect = null;
-            Vector_Rectangle endRect = null;
-            int lastKey;
-            //usunięcie punktów z linii poziomych i pionowych
-            if (sortedKeyList.Count >= 3)
-            {
-                lastKey = simplifiedEdgeList.NextKey();
-                simplifiedEdgeList.Add(lastKey, startRect);
-                for (var i = 1; i < sortedKeyList.Count - 1; i++)
-                {                      
-                    middleRect = edgeList[sortedKeyList[i]];
-                    endRect = edgeList[sortedKeyList[i + 1]];
-                    if (!InLineHorizontal(startRect, middleRect, endRect) &&
-                        !InLineVertical(startRect, middleRect, endRect)) 
-                    {
-                        lastKey = simplifiedEdgeList.NextKey();
-                        simplifiedEdgeList.Add(lastKey, middleRect);
-                        startRect = middleRect;
-                        //jeśli krawędź zakręciła w kierunku poziomym, to prevDiff też w tym kierunku obliczamy
-                    }                    
-                }
-
-
-                startRect = simplifiedEdgeList[lastKey];
-                middleRect = edgeList[sortedKeyList[sortedKeyList.Count - 1]];
-                endRect = edgeList[sortedKeyList[0]];
-
-                if (!InLineHorizontal(startRect, middleRect, endRect) &&
-                    !InLineVertical(startRect, middleRect, endRect)) 
-                simplifiedEdgeList.Add(simplifiedEdgeList.NextKey(), edgeList[sortedKeyList[sortedKeyList.Count - 1]]);
-            }
-            else
-            {
-                for (var i = 0; i < sortedKeyList.Count; i++)
-                {
-                    simplifiedEdgeList.Add(simplifiedEdgeList.NextKey(), edgeList[sortedKeyList[i]]);
-                }
-            }
-        }
-            //obiekty "podążają" w jednym kierunku w linii poziomej
-            internal bool InLineHorizontal(Vector_Rectangle aStartRect,
-                                    Vector_Rectangle aMiddleRect,
-                                    Vector_Rectangle aEndRect)
-            {
-                bool result = (aStartRect.p1.Y - aMiddleRect.p1.Y > 0 && aMiddleRect.p1.Y - aEndRect.p1.Y > 0) ||
-                              (aStartRect.p1.Y - aMiddleRect.p1.Y < 0 && aMiddleRect.p1.Y - aEndRect.p1.Y < 0);
-                return result && aStartRect.p1.X == aMiddleRect.p1.X && aStartRect.p1.X == aEndRect.p1.X;
-                }
-
-            //obiekty "podążają" w jednym kierunku w linii pionowej
-            internal bool InLineVertical(Vector_Rectangle aStartRect,
-                                    Vector_Rectangle aMiddleRect,
-                                    Vector_Rectangle aEndRect)
-            {
-                bool result = (aStartRect.p1.X - aMiddleRect.p1.X > 0 && aMiddleRect.p1.X - aEndRect.p1.X > 0) ||
-                              (aStartRect.p1.X - aMiddleRect.p1.X < 0 && aMiddleRect.p1.X - aEndRect.p1.X < 0);
-                return result && aStartRect.p1.Y == aMiddleRect.p1.Y && aStartRect.p1.Y == aEndRect.p1.Y;
-            }
-
-        public Point[] PointList2PxArray(List<GeoPoint> aGeoList)
+                public Point[] PointList2PxArray(List<GeoPoint> aGeoList)
         {
             Point[] result = new Point[aGeoList.Count];
             for (int i = 0; i < aGeoList.Count; i++)

@@ -116,7 +116,7 @@ namespace Migracja
                         vectObj.parentVectorGroup.testColor = Color.FromArgb(random.Next(255), random.Next(255), random.Next(255));
                         vectObj.parentVectorGroup.sourceColor = vectObj.color;
                         vectObj.parentVectorGroup.Add(0, vectObj);
-                        vectObj.parentVectorGroup.edgeList.Add(0, vectObj);
+                        //vectObj.parentVectorGroup.edgeSliceList.Add(0, vectObj);
                         DateTime d1 = DateTime.Now;
                         int key = this.NextKey();
                         ts += (DateTime.Now - d1);
@@ -285,7 +285,7 @@ namespace Migracja
                 if ((int)Math.DivRem((long)i, (long)inMod, out dummy) == 0)
                     UpdateInfoAction("Tworzenie granicy dla grupy " + i.ToString() + "/" + (Count - 1).ToString());
                 i++;
-                vectGroup.MakeEdges(vectGroup.edgeList);
+                vectGroup.MakeEdge(vectGroup.edgeSliceList);
             };            
         }
 
@@ -307,7 +307,7 @@ namespace Migracja
             ColorPx colorPxDown;
             VectoredRectangleGroup vectGroup;
             VectoredRectangleGroup vectGroupDown;
-            VectorRectangeGroup list;
+            EdgeSliceList list;
             
             for (int y = 0; y < srcHeight - 1; y++)
                 for (int x = 0; x < srcWidth; x++)
@@ -317,15 +317,14 @@ namespace Migracja
                     if (colorPx.candidate && !colorPx.used)
                     {
                         // wybuduj i dodaj wewnętrzną granicę
-
-                        // budujemy listę punktów dla nowej granicy wewnętrznej
-                        list = new VectorRectangeGroup();
                         // vectGroup grupa główna
                         vectGroup = this[colorPx.group];
+                        // budujemy listę obiektów EdgeSlice dla nowej granicy wewnętrznej
+                        list = new EdgeSliceList(vectGroup);
                         // vectGroupDown - grupa px będącego poniżej. Z niego zaczniemy budować  granicę wewnętrzną
                         vectGroupDown = this[colorPxDown.group];
                         // MakeEdges wybuduje granicę i wszystkie px powyżej punktów granicy ustawi used=true
-                        vectGroupDown.MakeEdges(list, true, colorPx.group);
+                        vectGroupDown.MakeEdge(list, true, colorPx.group);
                         vectGroup.innerEdgesList.Add(vectGroup.innerEdgesList.NextKey(), list);
                     }
                 }

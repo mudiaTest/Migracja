@@ -33,8 +33,8 @@ namespace Migracja
             datePrv = aFunct("'MakeEdgesForGroups'", false, datePrv);
 
             //budowanie uproszczonej krawędzi na podstawie VectoredRectangleGroup.edgeList
-            singleThreadFactory.MakeSimplifiedEdges();
-            datePrv = aFunct("MakeSimplifiedEdges", false, datePrv);
+            //singleThreadFactory.MakeSimplifiedEdges();
+            //datePrv = aFunct("MakeSimplifiedEdges", false, datePrv);
 
             //
             singleThreadFactory.UpdateColorArr();
