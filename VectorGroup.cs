@@ -442,18 +442,18 @@ namespace Migracja
 
         internal void MakePointArrFromFullEdge(float aDpScale, float aDisplaceX, float aDisplaceY)
         {
-            pointArrFromFullEdge = MakePointArrFromEdge(edgeSliceList, aDpScale, aDisplaceX, aDisplaceY);
+            pointArrFromFullEdge = MakePointArrFromEdge(edgeSliceList.vectorRectangleFullList, aDpScale, aDisplaceX, aDisplaceY);
         }
 
         internal void MakePointArrFromSimplifiedEdge(float aDpScale, float aDisplaceX, float aDisplaceY)
         {
-            pointArrFromSimplifiedEdge = MakePointArrFromEdge(edgeSliceList, aDpScale, aDisplaceX, aDisplaceY);
+            pointArrFromSimplifiedEdge = MakePointArrFromEdge(edgeSliceList.simplifiedVectorRectangleFullList, aDpScale, aDisplaceX, aDisplaceY);
         }
 
-        private Point[] MakePointArrFromEdge(EdgeSliceList aEdgeList, float aDpScale, float aDisplaceX, float aDisplaceY)
+        private Point[] MakePointArrFromEdge(VectorRectangleList aEdgeList, float aDpScale, float aDisplaceX, float aDisplaceY)
             {
                 //Point[] result = new Point[aEdgePxList.Count * 3];
-                List<GeoPoint> pxPointList = MakeVectorEdge(aEdgeList.vectorRectangleFullList, GetColorArr(), false, aDpScale, aDpScale, aDisplaceX, aDisplaceY);
+                List<GeoPoint> pxPointList = MakeVectorEdge(aEdgeList, GetColorArr(), false, aDpScale, aDpScale, aDisplaceX, aDisplaceY);
                 return PointList2PxArray(pxPointList);
             }
 

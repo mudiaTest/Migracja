@@ -269,13 +269,16 @@ namespace Migracja
                             {
                                 if (!settings.TestColor())
                                 {
-                                    Math.DivRem(group.sourceColor.R + 100, 256, out tmpLineR);
-                                    Math.DivRem(group.sourceColor.G + 200, 256, out tmpLineG);
-                                    Math.DivRem(group.sourceColor.B + 10, 256, out tmpLineB);
+                                    Math.DivRem(group.sourceColor.R - 256, 256, out tmpLineR);
+                                    Math.DivRem(group.sourceColor.G - 256, 256, out tmpLineG);
+                                    Math.DivRem(group.sourceColor.B - 256, 256, out tmpLineB);
+                                    tmpLineR = Math.Abs(tmpLineR);
+                                    tmpLineG = Math.Abs(tmpLineG);
+                                    tmpLineB = Math.Abs(tmpLineB);
 
-                                    Math.DivRem(group.sourceColor.R + 200, 256, out tmpPointR);
-                                    Math.DivRem(group.sourceColor.G + 10, 256, out tmpPointG);
-                                    Math.DivRem(group.sourceColor.B + 100, 256, out tmpPointB);
+                                    Math.DivRem(group.sourceColor.R , 256, out tmpPointR);
+                                    Math.DivRem(group.sourceColor.G , 256, out tmpPointG);
+                                    Math.DivRem(group.sourceColor.B , 256, out tmpPointB);
                                 }
                                 else
                                 {

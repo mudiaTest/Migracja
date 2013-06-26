@@ -289,7 +289,7 @@ namespace Migracja
             };            
         }
 
-        internal void MakeSimplifiedEdges()
+        /*internal void MakeSimplifiedEdges()
         {
             VectoredRectangleGroup vectGroup;
             foreach (KeyValuePair<int, VectoredRectangleGroup> pair in this)
@@ -297,7 +297,7 @@ namespace Migracja
                 vectGroup = pair.Value;
                 vectGroup.MakeSimplifyVectorEdge();
             }
-        }
+        }*/
 
         //wybudowanie granic wewnętrznych. Przechodzimy po tablicy colorArr i dla
         //kandydatów dodajemy do ich grup nowe granice wewnętrzne - dlo listy
