@@ -67,11 +67,11 @@ namespace Migracja
         {
             Debug.Assert(aScale >= 1, "GetEdgeListAsArray nie może utworzyć polygonu dla skali <= 1.");
 
-            Point[] result = new Point[edgeSliceList.vectorRectangleFullList.Count];
+            Point[] result = new Point[edgeSliceList.vectorRectangleEdgePointFullList.Count];
             int i = 0;
-            foreach (int key in edgeSliceList.vectorRectangleFullList.GetSortedKeyList())
+            foreach (int key in edgeSliceList.vectorRectangleEdgePointFullList.GetSortedKeyList())
             {
-                result[i] = edgeSliceList.vectorRectangleFullList[key].p1;
+                result[i] = edgeSliceList.vectorRectangleEdgePointFullList[key].p1;
                 i++;
             }
             return result;
@@ -380,7 +380,7 @@ namespace Migracja
         }
 
         //tworzy tablicę punktów z punktów zawartych w edgeSliceList
-        public List<GeoPoint> MakeVectorEdge(VectorRectangleList aEdgeVectorRectangleList,
+        public List<GeoPoint> MakeVectorEdge(VectorRectangleEdgePointList aEdgeVectorRectangleList,
                                              ColorPx[][] aColorArr,
                                              bool aBlOnlyFillColorArr,
                                              float aMultiX = 1, float aMultiY = 1,
@@ -394,7 +394,7 @@ namespace Migracja
 
             if (aEdgeVectorRectangleList.Count > 1)
             {
-                VectorRectangleList list;
+                VectorRectangleEdgePointList list;
                 //foreach(KeyValuePair<int, EdgeSlice> pair in aEdgeSliceList)
                 //{
                     //list = pair.Value.vectorRectangleList(aEdgeSliceList.parent);
@@ -442,15 +442,15 @@ namespace Migracja
 
         internal void MakePointArrFromFullEdge(float aDpScale, float aDisplaceX, float aDisplaceY)
         {
-            pointArrFromFullEdge = MakePointArrFromEdge(edgeSliceList.vectorRectangleFullList, aDpScale, aDisplaceX, aDisplaceY);
+            pointArrFromFullEdge = MakePointArrFromEdge(edgeSliceList.vectorRectangleEdgePointFullList, aDpScale, aDisplaceX, aDisplaceY);
         }
 
         internal void MakePointArrFromSimplifiedEdge(float aDpScale, float aDisplaceX, float aDisplaceY)
         {
-            pointArrFromSimplifiedEdge = MakePointArrFromEdge(edgeSliceList.simplifiedVectorRectangleFullList, aDpScale, aDisplaceX, aDisplaceY);
+            pointArrFromSimplifiedEdge = MakePointArrFromEdge(edgeSliceList.simplifiedVectorRectangleEdgePointFullList, aDpScale, aDisplaceX, aDisplaceY);
         }
 
-        private Point[] MakePointArrFromEdge(VectorRectangleList aEdgeList, float aDpScale, float aDisplaceX, float aDisplaceY)
+        private Point[] MakePointArrFromEdge(VectorRectangleEdgePointList aEdgeList, float aDpScale, float aDisplaceX, float aDisplaceY)
             {
                 //Point[] result = new Point[aEdgePxList.Count * 3];
                 List<GeoPoint> pxPointList = MakeVectorEdge(aEdgeList, GetColorArr(), false, aDpScale, aDpScale, aDisplaceX, aDisplaceY);

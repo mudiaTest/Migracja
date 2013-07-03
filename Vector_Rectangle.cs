@@ -18,6 +18,7 @@ namespace Migracja
         public Point p2{ get{return points.ElementAt(3).Value;}
                          set{points.Add(3, value);}
         }
+        //kierunek - domyślnie null - ważny tylko dla granic
 
         public Vector_Rectangle(Color aColor, Point aP1, Point aP2)
         {
