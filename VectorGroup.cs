@@ -71,7 +71,7 @@ namespace Migracja
             int i = 0;
             foreach (int key in edgeSliceList.vectorRectangleEdgePointFullList.GetSortedKeyList())
             {
-                result[i] = edgeSliceList.vectorRectangleEdgePointFullList[key].p1;
+                result[i] = edgeSliceList.vectorRectangleEdgePointFullList[key].vectorRectangle.p1;
                 i++;
             }
             return result;
@@ -401,25 +401,25 @@ namespace Migracja
                 //if (aEdgeVectorRectangleList.Count >= 3)
                     //{
                         //SetLength(result, self.rectList.Count+30);
-                        Point o1 = aEdgeVectorRectangleList[aEdgeVectorRectangleList.Count - 1].GetP(0);
-                        Point o2 = aEdgeVectorRectangleList[0].GetP(0);
-                        Point o3 = aEdgeVectorRectangleList[1].GetP(0);
+                        Point o1 = aEdgeVectorRectangleList[aEdgeVectorRectangleList.Count - 1].vectorRectangle.GetP(0);
+                        Point o2 = aEdgeVectorRectangleList[0].vectorRectangle.GetP(0);
+                        Point o3 = aEdgeVectorRectangleList[1].vectorRectangle.GetP(0);
                         MakePartEdge(o1, o2, o3, ref counter, result, aMultiX, aMultiY, aDisplaceX, aDisplaceY,
                                      aColorArr, aBlOnlyFillColorArr);
 
                         for (int i = 1; i < aEdgeVectorRectangleList.Count - 1; i++)
                         {
-                            o1 = aEdgeVectorRectangleList[i - 1].GetP(0);
-                            o2 = aEdgeVectorRectangleList[i].GetP(0);
-                            o3 = aEdgeVectorRectangleList[i + 1].GetP(0);
+                            o1 = aEdgeVectorRectangleList[i - 1].vectorRectangle.GetP(0);
+                            o2 = aEdgeVectorRectangleList[i].vectorRectangle.GetP(0);
+                            o3 = aEdgeVectorRectangleList[i + 1].vectorRectangle.GetP(0);
                             MakePartEdge(o1, o2, o3, ref counter, result, aMultiX, aMultiY, aDisplaceX, aDisplaceY,
                                          aColorArr, aBlOnlyFillColorArr);
                         }
                         ;
 
-                        o1 = aEdgeVectorRectangleList[aEdgeVectorRectangleList.Count - 2].GetP(0);
-                        o2 = aEdgeVectorRectangleList[aEdgeVectorRectangleList.Count - 1].GetP(0);
-                        o3 = aEdgeVectorRectangleList[0].GetP(0);
+                        o1 = aEdgeVectorRectangleList[aEdgeVectorRectangleList.Count - 2].vectorRectangle.GetP(0);
+                        o2 = aEdgeVectorRectangleList[aEdgeVectorRectangleList.Count - 1].vectorRectangle.GetP(0);
+                        o3 = aEdgeVectorRectangleList[0].vectorRectangle.GetP(0);
                         MakePartEdge(o1, o2, o3, ref counter, result, aMultiX, aMultiY, aDisplaceX, aDisplaceY,
                                      aColorArr, aBlOnlyFillColorArr);
                         //SetLength(result, Min(counter,10));
@@ -432,7 +432,7 @@ namespace Migracja
             {
                 //if (!aBlOnlyFillColorArr) 
                 //    SetLength(result, 4);
-                MakePartEdgeForOnePoint(aEdgeVectorRectangleList[0].GetP(0),
+                MakePartEdgeForOnePoint(aEdgeVectorRectangleList[0].vectorRectangle.GetP(0),
                                         result, aMultiX, aMultiY, aDisplaceX, aDisplaceY,
                                         aColorArr, aBlOnlyFillColorArr);
                 counter = 4;

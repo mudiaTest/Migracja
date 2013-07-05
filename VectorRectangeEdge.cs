@@ -44,12 +44,12 @@ namespace Migracja
             fmaxKey = -1;
         }
 
-        public static List<int> GetSortedKeyList(this Dictionary<int, Vector_Rectangle> dict)
+        /*public static List<int> GetSortedKeyList(this Dictionary<int, Vector_Rectangle> dict)
         {
             List<int> result = dict.Keys.ToList();
             result.Sort();
             return result;
-        }
+        }*/
     }
 
     internal class EdgeSliceList : Dictionary<int, EdgeSlice>
@@ -236,7 +236,7 @@ namespace Migracja
 
         internal void FillSimplifyVectorRectangleList()
         {
-            //to do
+            /*//to do
             //simplifiedEdgeList = new EdgeSliceList(this);
             List<int> sortedKeyList = fVectorRectangleListUp.GetSortedKeyList(); 
             Vector_Rectangle startRect = fVectorRectangleListUp[sortedKeyList[0]];
@@ -280,7 +280,7 @@ namespace Migracja
                     fSimplifiedVectorRectangleListUp.Add(fSimplifiedVectorRectangleListUp.NextKey(),
                                                          fVectorRectangleListUp[sortedKeyList[i]]);
                 }
-            }
+            }*/
         }
 
         //obiekty "podążają" w jednym kierunku w linii poziomej
@@ -419,7 +419,7 @@ namespace Migracja
                     list = aEdgeSliceList[i].vectorRectangleList(aEdgeSliceList.parent);
                     for (int j = 0; j < list.Count; j++)
                     {
-                        Vector_Rectangle point = list[j];
+                        Vector_Rectangle point = list[j].vectorRectangle;
                         if (point.p1.Y >= 1)
                             GetColorArr()[point.p1.X][point.p1.Y - 1].used = true;
                     }
@@ -526,8 +526,8 @@ namespace Migracja
                     nextEdgePoint = GetNextEdge(prevEdgePoint.vectorRectangle, ref arrivDir, aBlInnerBorder, aOuterGroup);
                     //powstanie gdy nie możemy oddać następnej krawędzi, ale wyjątkikem jest gdy jest to pojedynczy pixel
                     if ((nextEdgePoint == null) && (aEdgeSliceList.Count != 0))
-                        Debug.Assert(false, "Oddany edge jest nil (" + prevEdgePoint.p1.X.ToString() +
-                                            "," + prevEdgePoint.p1.Y.ToString() +
+                        Debug.Assert(false, "Oddany edge jest nil (" + prevEdgePoint.vectorRectangle.p1.X.ToString() +
+                                            "," + prevEdgePoint.vectorRectangle.p1.Y.ToString() +
                                             "), liczba znalezionych kreawędzi:" +
                                             aEdgeSliceList.Count.ToString());
 
@@ -620,7 +620,7 @@ namespace Migracja
                 list = aEdgeSliceList[i].vectorRectangleList(aEdgeSliceList.parent);
                 for (int j = 0; j < list.Count; j++)
                 {
-                    edgePoint = list[j];
+                    edgePoint = list[j].vectorRectangle;
                     geoPoint = PxPointToGeoPoint(edgePoint);
                     edgeGeoList.Add(i, geoPoint); //przepisujemy klucz z edgePxList
                 }

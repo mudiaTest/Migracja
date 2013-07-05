@@ -39,5 +39,12 @@ namespace Migracja
             result.Sort();
             return result;
         }
+
+        public static List<int> GetSortedKeyList(this Dictionary<int, VectorRectangleEdgePoint> dict)
+        {
+            List<int> result = dict.Keys.ToList();
+            result.Sort();
+            return result;
+        }
     }
 }
