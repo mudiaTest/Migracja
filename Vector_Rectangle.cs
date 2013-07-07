@@ -27,6 +27,11 @@ namespace Migracja
             p2 = aP2;
         }
 
+        internal string DbgStr()
+        {
+            return "(" + p1.X.ToString() + "," + p1.Y.ToString() + ")";
+        }
+
         public static void Zintegruj(Vector_Rectangle aObj1, Vector_Rectangle aObj2, MapFactory aMapFactory)
         {
             Vector_Rectangle obj1;

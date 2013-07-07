@@ -83,13 +83,13 @@ namespace Migracja
         private int Direction(Point p1, Point p2)
         {
             if (p1.X > p2.X)
-                return Cst.fromRight;
+                return Cst.fromRightToLeft;
             else if (p1.X < p2.X)
-                return Cst.fromLeft;
+                return Cst.fromLeftToRight;
             else if (p1.Y > p2.Y)
-                return Cst.fromBottom;
+                return Cst.fromBottomToTop;
             else
-                return Cst.fromTop;
+                return Cst.fromTopToBottom;
         }
 
         //tworzy krawędź z 3 kolejnych punktów
@@ -108,15 +108,15 @@ namespace Migracja
             GeoPoint lastGeoPoint = null;
             if( aGeoArr.Count >= 1) 
                 lastGeoPoint = aGeoArr.Last();
-            if (Direction(aPrvPoint, aActPoint) == Cst.fromLeft) 
+            if (Direction(aPrvPoint, aActPoint) == Cst.fromLeftToRight) 
             {
-                if (Direction(aActPoint, aNextPoint) == Cst.fromBottom) 
+                if (Direction(aActPoint, aNextPoint) == Cst.fromBottomToTop) 
                 {
                     nextGeoPoint = new GeoPoint(aActPoint.X * aMultiX + aDisplaceX, aActPoint.Y * aMultiY + aDisplaceY);//!!!
                     if (lastGeoPoint == null || lastGeoPoint.GetX() != nextGeoPoint.GetX() || lastGeoPoint.GetY() != nextGeoPoint.GetY())
                         aGeoArr.Add(nextGeoPoint);
                 }
-                else if (Direction(aActPoint, aNextPoint) == Cst.fromTop) 
+                else if (Direction(aActPoint, aNextPoint) == Cst.fromTopToBottom) 
                 {
                     if (!aBlOnlyFillColorArr) 
                     {
@@ -129,7 +129,7 @@ namespace Migracja
                     colorPx.borderWE = true;
                     colorPx.borderNS = true;
                 }
-                else if (Direction(aActPoint, aNextPoint) == Cst.fromLeft) 
+                else if (Direction(aActPoint, aNextPoint) == Cst.fromLeftToRight) 
                 {
                     if (!aBlOnlyFillColorArr) 
                     {
@@ -157,9 +157,9 @@ namespace Migracja
                 };
             }
 
-            else if (Direction(aPrvPoint, aActPoint) == Cst.fromRight) 
+            else if (Direction(aPrvPoint, aActPoint) == Cst.fromRightToLeft) 
             {
-                if (Direction(aActPoint, aNextPoint) == Cst.fromBottom) 
+                if (Direction(aActPoint, aNextPoint) == Cst.fromBottomToTop) 
                 {
                     if (!aBlOnlyFillColorArr) 
                     {
@@ -172,13 +172,13 @@ namespace Migracja
                     colorPx.borderEW = true;
                     colorPx.borderSN = true;
                 }
-                else if (Direction(aActPoint, aNextPoint) == Cst.fromTop) 
+                else if (Direction(aActPoint, aNextPoint) == Cst.fromTopToBottom) 
                 {
                     nextGeoPoint = new GeoPoint((aActPoint.X + 1) * aMultiX + aDisplaceX, (aActPoint.Y + 1) * aMultiY + aDisplaceY);//!!!
                     if (lastGeoPoint == null || lastGeoPoint.GetX() != nextGeoPoint.GetX() || lastGeoPoint.GetY() != nextGeoPoint.GetY())
                         aGeoArr.Add(nextGeoPoint);
                 }
-                else if (Direction(aActPoint, aNextPoint) == Cst.fromRight) 
+                else if (Direction(aActPoint, aNextPoint) == Cst.fromRightToLeft) 
                 {
                     if (!aBlOnlyFillColorArr) 
                     {
@@ -206,15 +206,15 @@ namespace Migracja
                 };
             }
 
-            else if (Direction(aPrvPoint, aActPoint) == Cst.fromTop) 
+            else if (Direction(aPrvPoint, aActPoint) == Cst.fromTopToBottom) 
             {
-                if (Direction(aActPoint, aNextPoint) == Cst.fromLeft) 
+                if (Direction(aActPoint, aNextPoint) == Cst.fromLeftToRight) 
                 {
                     nextGeoPoint = new GeoPoint((aActPoint.X + 1) * aMultiX + aDisplaceX, (aActPoint.Y) * aMultiY + aDisplaceY); //!!!
                     if (lastGeoPoint == null || lastGeoPoint.GetX() != nextGeoPoint.GetX() || lastGeoPoint.GetY() != nextGeoPoint.GetY())
                         aGeoArr.Add(nextGeoPoint);
                 }
-                else if (Direction(aActPoint, aNextPoint) == Cst.fromRight) 
+                else if (Direction(aActPoint, aNextPoint) == Cst.fromRightToLeft) 
                 {
                     if (!aBlOnlyFillColorArr) 
                     {
@@ -227,7 +227,7 @@ namespace Migracja
                     colorPx.borderNS = true;
                     colorPx.borderEW = true;
                 }
-                else if (Direction(aActPoint, aNextPoint) == Cst.fromTop) 
+                else if (Direction(aActPoint, aNextPoint) == Cst.fromTopToBottom) 
                 {
                     if (!aBlOnlyFillColorArr) 
                     {
@@ -257,7 +257,7 @@ namespace Migracja
 
             else //from bottom
             {
-                if (Direction(aActPoint, aNextPoint) == Cst.fromLeft) 
+                if (Direction(aActPoint, aNextPoint) == Cst.fromLeftToRight) 
                 {
                     if (!aBlOnlyFillColorArr) 
                     {
@@ -270,13 +270,13 @@ namespace Migracja
                     colorPx.borderSN = true;
                     colorPx.borderWE = true;
                 }
-                else if (Direction(aActPoint, aNextPoint) == Cst.fromRight) 
+                else if (Direction(aActPoint, aNextPoint) == Cst.fromRightToLeft) 
                 {
                     nextGeoPoint = new GeoPoint(aActPoint.X * aMultiX + aDisplaceX, (aActPoint.Y + 1) * aMultiY + aDisplaceY);//!!!
                     if (lastGeoPoint == null || lastGeoPoint.GetX() != nextGeoPoint.GetX() || lastGeoPoint.GetY() != nextGeoPoint.GetY())
                         aGeoArr.Add(nextGeoPoint);
                 }
-                else if (Direction(aActPoint, aNextPoint) == Cst.fromBottom) 
+                else if (Direction(aActPoint, aNextPoint) == Cst.fromBottomToTop) 
                 {
                     if (!aBlOnlyFillColorArr) 
                     {
@@ -325,6 +325,46 @@ namespace Migracja
             colorPx.borderSN = true;
             colorPx.borderEW = true;
             colorPx.borderWE = true;            
+        }
+
+        //tworzy krawędzie dla pojedynczego punktu
+        private void AddEdgePoint(VectorRectangleEdgePoint vectorRectangleEdgePoint, List<GeoPoint> aGeoArr,
+                                  float aDpMultiX, float aDPMultiY, float aDpDisplaceX, float aDpDisplaceY,
+                                  ColorPx[][] aColorArr, bool aBlOnlyFillColorArr)
+        {
+            //pobierany lewy górny róg rectanglai na jego podstawie będziemy tworzyć kolejne punkty polygonu
+            Point point = vectorRectangleEdgePoint.vectorRectangle.p1;
+            if (!aBlOnlyFillColorArr)
+            {
+                switch (vectorRectangleEdgePoint.direction)
+                {
+                    case Cst.fromLeftToRight: aGeoArr.Add(new GeoPoint((point.X) * aDpMultiX + aDpDisplaceX, (point.Y) * aDPMultiY + aDpDisplaceY));
+                        break;
+                    case Cst.fromTopToBottom: aGeoArr.Add(new GeoPoint((point.X + 1) * aDpMultiX + aDpDisplaceX, point.Y * aDPMultiY + aDpDisplaceY)); 
+                        break;
+                    case Cst.fromRightToLeft: aGeoArr.Add(new GeoPoint((point.X + 1) * aDpMultiX + aDpDisplaceX, (point.Y + 1) * aDPMultiY + aDpDisplaceY)); 
+                        break;
+                    case Cst.fromBottomToTop: aGeoArr.Add(new GeoPoint((point.X) * aDpMultiX + aDpDisplaceX, (point.Y + 1) * aDPMultiY + aDpDisplaceY)); 
+                        break;
+                }
+                if (vectorRectangleEdgePoint.endingPoint)
+                    switch (vectorRectangleEdgePoint.direction)
+                    {
+                        case Cst.fromLeftToRight: aGeoArr.Add(new GeoPoint((point.X + 1 ) * aDpMultiX + aDpDisplaceX, (point.Y) * aDPMultiY + aDpDisplaceY));
+                            break;
+                        case Cst.fromTopToBottom: aGeoArr.Add(new GeoPoint((point.X + 1) * aDpMultiX + aDpDisplaceX, (point.Y + 1) * aDPMultiY + aDpDisplaceY));
+                            break;
+                        case Cst.fromRightToLeft: aGeoArr.Add(new GeoPoint((point.X) * aDpMultiX + aDpDisplaceX, (point.Y + 1) * aDPMultiY + aDpDisplaceY));
+                            break;
+                        case Cst.fromBottomToTop: aGeoArr.Add(new GeoPoint((point.X) * aDpMultiX + aDpDisplaceX, (point.Y) * aDPMultiY + aDpDisplaceY));
+                            break;
+                    }
+        }
+            /*ColorPx colorPx = aColorArr[point.X][point.Y];
+            colorPx.borderNS = true;
+            colorPx.borderSN = true;
+            colorPx.borderEW = true;
+            colorPx.borderWE = true;*/
         }
 
         private void GetLine(Point p1, Point p2, ref float A, ref float C, ref float mian)
@@ -391,10 +431,18 @@ namespace Migracja
             int counter = 0;
             //if (!aBlOnlyFillColorArr)
             //    SetLength(result, aEdgePxList.Count*3);
-
+            Debug.Assert(aEdgeVectorRectangleList.Count > 1, "Pusta lista aEdgeVectorRectangleList.");
             if (aEdgeVectorRectangleList.Count > 1)
             {
-                VectorRectangleEdgePointList list;
+                //VectorRectangleEdgePointList list;               
+                foreach (KeyValuePair<int, VectorRectangleEdgePoint> pair in aEdgeVectorRectangleList)
+                {
+                    AddEdgePoint(pair.Value, result, 
+                                 aMultiX, aMultiY, aDisplaceX, aDisplaceY,
+                                 aColorArr, aBlOnlyFillColorArr);
+                
+                }
+                /*
                 //foreach(KeyValuePair<int, EdgeSlice> pair in aEdgeSliceList)
                 //{
                     //list = pair.Value.vectorRectangleList(aEdgeSliceList.parent);
@@ -426,15 +474,15 @@ namespace Migracja
                         //if (!aBlOnlyFillColorArr) then
                         //   SetLength(result, counter);
                     //}
-                //}
+                //}*/
             } 
             else
             {
                 //if (!aBlOnlyFillColorArr) 
                 //    SetLength(result, 4);
-                MakePartEdgeForOnePoint(aEdgeVectorRectangleList[0].vectorRectangle.GetP(0),
+               /* MakePartEdgeForOnePoint(aEdgeVectorRectangleList[0].vectorRectangle.GetP(0),
                                         result, aMultiX, aMultiY, aDisplaceX, aDisplaceY,
-                                        aColorArr, aBlOnlyFillColorArr);
+                                        aColorArr, aBlOnlyFillColorArr);*/
                 counter = 4;
             }
             return result;

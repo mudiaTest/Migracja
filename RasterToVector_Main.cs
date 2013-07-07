@@ -41,8 +41,8 @@ namespace Migracja
             datePrv = aFunct("'UpdateColorArr'", false, datePrv);
 
             //budowanie granic wewnętrznych
-            singleThreadFactory.MakeInnerEdgesForGroups();
-            aFunct("'MakeInnerEdgesForGroups'", false, datePrv);
+            //singleThreadFactory.MakeInnerEdgesForGroups();
+            //aFunct("'MakeInnerEdgesForGroups'", false, datePrv);
 
             //budowanie list punktów dla rysowania polygonów - dla NIEUPROSZCZONEJ krawędzi. 
             //Jako mnożnika używamy maxymalnego dozwolonego powiększenia
@@ -53,8 +53,8 @@ namespace Migracja
             //budowanie list punktów dla rysowania polygonów - dla UPROSZCZONEJ krawędzi. 
             //Jako mnożnika używamy maxymalnego dozwolonego powiększenia
             //Wynik zapisywany jest do VectoredRectangleGroup.pointArrFromSimplifiedEdge
-            singleThreadFactory.MakePointArrFromSimplifiedEdgeForGroups();
-            aFunct("'MakePointArrFromSimplifiedEdgeForGroups'", false, datePrv);
+            //singleThreadFactory.MakePointArrFromSimplifiedEdgeForGroups();
+            //aFunct("'MakePointArrFromSimplifiedEdgeForGroups'", false, datePrv);
 
             //singleThreadFactory.Init(aSettings);
             return singleThreadFactory;
