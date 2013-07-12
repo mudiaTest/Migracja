@@ -29,16 +29,6 @@ namespace Migracja
     {
         internal static int Next(int aDir)
         {
-            /* if (aDir == Cst.fromLeftToRight)
-                return Cst.fromTopToBottom;
-            else if (aDir == Cst.fromTopToBottom)
-                return Cst.fromRightToLeft;
-            else if (aDir == Cst.fromRightToLeft)
-                return Cst.fromBottomToTop;
-            else if (aDir == Cst.fromBottomToTop)
-                return Cst.fromLeftToRight;
-            else
-                Debug.Assert(false, "Nieznana wartość kierunku: " + aDir.ToString());*/
             if (aDir > 0 && aDir < 4)
                 return ++aDir;
             else if (aDir == 4)

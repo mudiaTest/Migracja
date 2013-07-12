@@ -13,7 +13,8 @@ namespace Migracja
         internal Vector_Rectangle vectorRectangle = null;
         internal int? direction = null;
         internal bool endingPoint = false;
-        
+        internal EdgeSlice edgeSlice = null;
+
         internal bool Eq(VectorRectangleEdgePoint aPoint)
         {
             return vectorRectangle == aPoint.vectorRectangle && direction == aPoint.direction;
@@ -380,6 +381,48 @@ namespace Migracja
             return null;
         }
 
+        private EdgeSlice GetSliceEdgeFromEdgePoint(VectorRectangleEdgePoint aPoint)
+        {
+            Vector_Rectangle point = GetVectorRectangleFromDirection(aPoint.vectorRectangle, aPoint.direction);
+            if (point == null)
+                return null;
+            else
+                return point.parentVectorRectangleEdgePoint.edgeSlice;
+        }
+            private Vector_Rectangle GetVectorRectangleFromDirection(Vector_Rectangle aPoint, int? aDir)
+            {
+                Vector_Rectangle result = null;
+                Point tmpPoint;
+                if (aDir == Cst.fromLeftToRight)
+                {
+                    tmpPoint = new Point(aPoint.p1.X, aPoint.p1.Y - 1);
+                }
+                else if (aDir == Cst.fromTopToBottom)
+                {
+                    tmpPoint = new Point(aPoint.p1.X + 1, aPoint.p1.Y);
+                }
+                else if (aDir == Cst.fromRightToLeft)
+                {
+                    tmpPoint = new Point(aPoint.p1.X, aPoint.p1.Y + 1);
+                }
+                else if (aDir == Cst.fromBottomToTop)
+                {
+                    tmpPoint = new Point(aPoint.p1.X - 1, aPoint.p1.Y);
+                }
+                else
+                {
+                    result = null;
+                    tmpPoint = new Point(0, 0);
+                    Debug.Assert(false, "Nieznany kierunek: " + aDir.ToString());
+                }
+
+                if (tmpPoint.X < 0 || tmpPoint.X >= GetVectorArr().Length || tmpPoint.Y < 0 || tmpPoint.Y >= GetVectorArr()[0].Length)
+                    result = null;
+                else
+                    result = GetVectorArr()[tmpPoint.X][tmpPoint.Y];
+                return result;
+            }
+
         private VectorRectangleEdgePoint GetNextEdge(VectorRectangleEdgePoint aPrevEdgePoint, ref int aPrvDir, bool aBlInnerBorder,
                                                 int aOuterGroup)
         {
@@ -416,30 +459,14 @@ namespace Migracja
             {
                 result = new VectorRectangleEdgePoint(aPrevEdgePoint.vectorRectangle, Dir.Next(aPrevEdgePoint.direction));
             }
+            result.vectorRectangle.parentVectorRectangleEdgePoint = result;
             return result;
-        }
+        }            
 
             private Vector_Rectangle FindNextPoint(Vector_Rectangle aPrevEdgePoint, int aPrvEdgeDir, bool aBlInnerBorder,
                                                    int aOuterGroup)
             {
                 Vector_Rectangle Result = null;
-                /*if (aPrvEdgeDir == Cst.noFromEdge)
-                {
-                    Result = CheckTop(aPrevEdgePoint, aBlInnerBorder, aOuterGroup);
-                    if (Result == null)
-                    {
-                        Result = CheckRight(aPrevEdgePoint, aBlInnerBorder, aOuterGroup);
-                        if (Result == null)
-                        {
-                            Result = CheckBottom(aPrevEdgePoint, aBlInnerBorder, aOuterGroup);
-                            if (Result == null)
-                            {
-                                Result = CheckLeft(aPrevEdgePoint, aBlInnerBorder, aOuterGroup);
-                            }
-                        }
-                    }
-                }*/
-                //else
                 if (aPrvEdgeDir == Cst.fromLeftToRight)
                 {
                     Result = CheckTop(aPrevEdgePoint, aBlInnerBorder, aOuterGroup);
@@ -662,6 +689,7 @@ namespace Migracja
             aEdgeSliceList.ClearReset();
             //startEdgePoint to pierwszy punkt na liście, bo idziemy od lewej strony w najwyższym wierszu
             VectorRectangleEdgePoint startEdgePoint = new VectorRectangleEdgePoint(this[0], Cst.fromLeftToRight);
+            this[0].parentVectorRectangleEdgePoint = startEdgePoint;
             VectorRectangleEdgePoint prevEdgePoint = startEdgePoint;
             int arrivDir = Cst.fromLeftToRight; //zaczynamy od max lewego ponktu na górnej linji
             //Każemy zacząć szukanie od prawej
@@ -669,18 +697,26 @@ namespace Migracja
 
             EdgeSlice actSlice = new EdgeSlice(aEdgeSliceList.parent);
             EdgeSlice firstSlice = actSlice;
-            aEdgeSliceList.Add(aEdgeSliceList.NextKey(), actSlice);
             //1-pixelowy obiekt traktujemy inaczej
             if (Count != 1)
             {
                 //kończymy jeśli trafiamy na początek, lub na 1-pixelowy obiekt
-                Debug.Assert(
+                /*Debug.Assert(
                     aEdgeSliceList.Count == 1 &&
                     aEdgeSliceList[0].vectorRectangleList(aEdgeSliceList.parent).Count == 0,
                     "aEdgeSliceList.Count: " + aEdgeSliceList.Count.ToString() + "vectorRectangleList: " +
-                    aEdgeSliceList[0].vectorRectangleList(aEdgeSliceList.parent).Count.ToString());
-                actSlice.vectorRectangleList(aEdgeSliceList.parent)
-                        .Add(actSlice.vectorRectangleList(aEdgeSliceList.parent).NextKey(), startEdgePoint);
+                    aEdgeSliceList[0].vectorRectangleList(aEdgeSliceList.parent).Count.ToString());*/
+                if (GetSliceEdgeFromEdgePoint(startEdgePoint) == null)
+                {
+                    aEdgeSliceList.Add(aEdgeSliceList.NextKey(), actSlice);
+                    actSlice.vectorRectangleList(aEdgeSliceList.parent)
+                            .Add(actSlice.vectorRectangleList(aEdgeSliceList.parent).NextKey(), startEdgePoint);
+                    actSlice = startEdgePoint.edgeSlice;
+                }
+                else
+                {
+                    aEdgeSliceList.Add(aEdgeSliceList.NextKey(), actSlice);
+                }
                 do
                 {
                     /*if (nextEdgePoint == startEdgePoint)
@@ -716,6 +752,7 @@ namespace Migracja
                     {
                         actSlice.vectorRectangleList(aEdgeSliceList.parent)
                                 .Add(actSlice.vectorRectangleList(aEdgeSliceList.parent).NextKey(), nextEdgePoint);
+                        nextEdgePoint.edgeSlice = actSlice;
                         //MakeUsed(nextEdgePoint aBlInnerBorder);
                         prevEdgePoint = nextEdgePoint;
                     }
