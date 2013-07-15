@@ -13,7 +13,8 @@ namespace Migracja
         internal Vector_Rectangle vectorRectangle = null;
         internal int? direction = null;
         internal bool endingPoint = false;
-        internal EdgeSlice edgeSlice = null;
+        internal EdgeSlice outerEdgeSlice = null;
+        internal EdgeSlice innerEdgeSlice = null;
 
         internal bool Eq(VectorRectangleEdgePoint aPoint)
         {
@@ -128,37 +129,76 @@ namespace Migracja
 
     internal class EdgeSlice
     {
-        private VectoredRectangleGroup parentVectoredRectangleGroupUp = null;
-        private VectoredRectangleGroup parentVectoredRectangleGroupDown = null;
+        private VectoredRectangleGroup parentVectoredRectangleGroupFirst = null;
+        private VectoredRectangleGroup parentVectoredRectangleGroupSecond = null;
 
         // !! fVectorRectangleListUp i fSimplifiedVectorRectangleListUp oraz
         //    fVectorRectangleListUp i fSimplifiedVectorRectangleListUp
         //    współdzielą te same obiekty VectRect !!
-        private VectorRectangleEdgePointList fVectorRectangleListUp = new VectorRectangleEdgePointList();
-        private VectorRectangleEdgePointList fVectorRectangleListDown = null;
+        private VectorRectangleEdgePointList fVectorRectangleListFirst = new VectorRectangleEdgePointList();
+        private VectorRectangleEdgePointList fVectorRectangleListSecond = null;
 
-        private VectorRectangleEdgePointList vectorRectangleListDown
+        private VectorRectangleEdgePointList vectorRectangleListSecond
         {
             get
             {
-                if (fVectorRectangleListDown == null)
+                if (fVectorRectangleListSecond == null)
                 {
-                    fVectorRectangleListDown = new VectorRectangleEdgePointList();
-                    for (int i = fVectorRectangleListUp.Count - 1; i >= 0; i--)
+                    fVectorRectangleListSecond = new VectorRectangleEdgePointList();
+                    for (int i = fVectorRectangleListFirst.Count - 1; i >= 0; i--)
                     {
-                        fVectorRectangleListDown.Add(fVectorRectangleListDown.NextKey(), fVectorRectangleListUp[i]);
+
+                        fVectorRectangleListSecond.Add(fVectorRectangleListSecond.NextKey(), GetOppositeDirectionEdgePoint(fVectorRectangleListFirst[i]));
                     }
                 }
-                return fVectorRectangleListDown;
+                return fVectorRectangleListSecond;
             }
         }
+            private VectorRectangleEdgePoint GetOppositeDirectionEdgePoint(VectorRectangleEdgePoint aPoint)
+            {
+                Point tmpPoint;
+                int tmpDirection;
+                Vector_Rectangle[][] tmpArr = parentVectoredRectangleGroupFirst.parentMapFactory.vectArr;
+                if (aPoint.direction == Cst.fromLeftToRight)
+                {
+                    tmpPoint = new Point(aPoint.vectorRectangle.p1.X, aPoint.vectorRectangle.p1.Y - 1);
+                    tmpDirection = Cst.fromRightToLeft;
+                }
+                else if (aPoint.direction == Cst.fromRightToLeft)
+                {
+                    tmpPoint = new Point(aPoint.vectorRectangle.p1.X, aPoint.vectorRectangle.p1.Y + 1);
+                    tmpDirection = Cst.fromLeftToRight;
+                }
+                else if (aPoint.direction == Cst.fromTopToBottom)
+                {
+                    tmpPoint = new Point(aPoint.vectorRectangle.p1.X + 1, aPoint.vectorRectangle.p1.Y);
+                    tmpDirection = Cst.fromBottomToTop;
+                }
+                else if (aPoint.direction == Cst.fromBottomToTop)
+                {
+                    tmpPoint = new Point(aPoint.vectorRectangle.p1.X - 1, aPoint.vectorRectangle.p1.Y);
+                    tmpDirection = Cst.fromTopToBottom;
+                }
+                else
+                {
+                    Debug.Assert(false, "Nieznany kierunek: " + aPoint.direction.ToString());
+                    tmpPoint = new Point(0, 0);
+                    tmpDirection = 0;
+                }
+                if (tmpPoint.X < 0 || tmpPoint.X >= tmpArr.Length || tmpPoint.Y < 0 || tmpPoint.Y >= tmpArr[0].Length)
+                    return null;
+
+                VectorRectangleEdgePoint result = new VectorRectangleEdgePoint(tmpArr[tmpPoint.X][tmpPoint.Y],
+                                                                               tmpDirection);
+                return result;
+            }
 
         internal VectorRectangleEdgePointList vectorRectangleList(VectoredRectangleGroup aGroup)
         {
-            if (aGroup == parentVectoredRectangleGroupUp)
-                return fVectorRectangleListUp;
-            else if (aGroup == parentVectoredRectangleGroupDown)
-                return vectorRectangleListDown;
+            if (aGroup == parentVectoredRectangleGroupFirst)
+                return fVectorRectangleListFirst;
+            else if (aGroup == parentVectoredRectangleGroupSecond)
+                return vectorRectangleListSecond;
             else if (aGroup == null)
             {
                 Debug.Assert(false, "aGroup jest Null");
@@ -171,32 +211,32 @@ namespace Migracja
             }
         }
 
-        private VectorRectangleEdgePointList fSimplifiedVectorRectangleListUp = new VectorRectangleEdgePointList();
-        private VectorRectangleEdgePointList fSimplifiedVectorRectangleListDown = null;
+        private VectorRectangleEdgePointList fSimplifiedVectorRectangleListFirst = new VectorRectangleEdgePointList();
+        private VectorRectangleEdgePointList fSimplifiedVectorRectangleListSecond = null;
 
-        private VectorRectangleEdgePointList simplifiedVectorRectangleListDown
+        private VectorRectangleEdgePointList simplifiedVectorRectangleListSecond
         {
             get
             {
-                if (fSimplifiedVectorRectangleListDown == null)
+                if (fSimplifiedVectorRectangleListSecond == null)
                 {
-                    fSimplifiedVectorRectangleListDown = new VectorRectangleEdgePointList();
-                    for (int i = fSimplifiedVectorRectangleListUp.Count - 1; i >= 0; i--)
+                    fSimplifiedVectorRectangleListSecond = new VectorRectangleEdgePointList();
+                    for (int i = fSimplifiedVectorRectangleListFirst.Count - 1; i >= 0; i--)
                     {
-                        fSimplifiedVectorRectangleListDown.Add(fSimplifiedVectorRectangleListDown.NextKey(),
-                                                               fSimplifiedVectorRectangleListUp[i]);
+                        fSimplifiedVectorRectangleListSecond.Add(fSimplifiedVectorRectangleListSecond.NextKey(),
+                                                               fSimplifiedVectorRectangleListFirst[i]);
                     }
                 }
-                return fSimplifiedVectorRectangleListDown;
+                return fSimplifiedVectorRectangleListSecond;
             }
         }
 
         internal VectorRectangleEdgePointList simplifiedVectorRectangleList(VectoredRectangleGroup aGroup)
         {
-            if (aGroup == parentVectoredRectangleGroupUp)
-                return fSimplifiedVectorRectangleListUp;
-            else if (aGroup == parentVectoredRectangleGroupDown)
-                return simplifiedVectorRectangleListDown;
+            if (aGroup == parentVectoredRectangleGroupFirst)
+                return fSimplifiedVectorRectangleListFirst;
+            else if (aGroup == parentVectoredRectangleGroupSecond)
+                return simplifiedVectorRectangleListSecond;
             else if (aGroup == null)
             {
                 Debug.Assert(false, "aGroup jest Null");
@@ -218,19 +258,19 @@ namespace Migracja
 
         public EdgeSlice(VectoredRectangleGroup aGroup)
         {
-            parentVectoredRectangleGroupUp = aGroup;
+            parentVectoredRectangleGroupFirst = aGroup;
         }
 
         public void ClearReset()
         {
-            if (fVectorRectangleListUp != null)
-                fVectorRectangleListUp.ClearReset();
-            if (fVectorRectangleListDown != null)
-                fVectorRectangleListDown.ClearReset();
-            if (fSimplifiedVectorRectangleListUp != null)
-                fSimplifiedVectorRectangleListUp.ClearReset();
-            if (fSimplifiedVectorRectangleListDown != null)
-                fSimplifiedVectorRectangleListDown.ClearReset();
+            if (fVectorRectangleListFirst != null)
+                fVectorRectangleListFirst.ClearReset();
+            if (fVectorRectangleListSecond != null)
+                fVectorRectangleListSecond.ClearReset();
+            if (fSimplifiedVectorRectangleListFirst != null)
+                fSimplifiedVectorRectangleListFirst.ClearReset();
+            if (fSimplifiedVectorRectangleListSecond != null)
+                fSimplifiedVectorRectangleListSecond.ClearReset();
         }
 
         /*internal void FillSimplifiedVectorRectangleList()
@@ -310,6 +350,24 @@ namespace Migracja
                           (aStartRect.p1.X - aMiddleRect.p1.X < 0 && aMiddleRect.p1.X - aEndRect.p1.X < 0);
             return result && aStartRect.p1.Y == aMiddleRect.p1.Y && aStartRect.p1.Y == aEndRect.p1.Y;
         }
+
+        internal VectorRectangleEdgePoint GetLastSecondPoint()
+        {
+            return fVectorRectangleListFirst[fVectorRectangleListFirst.Count - 1];
+        }
+
+        internal VectorRectangleEdgePoint GetEdgeSliceForPoint(Point aPoint, VectoredRectangleGroup aGroup)
+        {
+            VectorRectangleEdgePoint result = null;
+            VectorRectangleEdgePointList tmpEdgePointList = vectorRectangleList(aGroup);
+            for (int i = 0; i < tmpEdgePointList.Count; i++)
+            {
+                if (tmpEdgePointList[i].vectorRectangle.p1.X == aPoint.X &&
+                    tmpEdgePointList[i].vectorRectangle.p1.Y == aPoint.Y)
+                    result = tmpEdgePointList[i];
+            }
+            return result;
+        }
     }
 
     partial class VectoredRectangleGroup : Dictionary<int, Vector_Rectangle>
@@ -387,7 +445,15 @@ namespace Migracja
             if (point == null)
                 return null;
             else
-                return point.parentVectorRectangleEdgePoint.edgeSlice;
+            {
+                EdgeSlice tmpEdgeSlice = point.parentVectorRectangleEdgePoint.outerEdgeSlice;
+                if (tmpEdgeSlice != null && tmpEdgeSlice.GetEdgeSliceForPoint(point.p1, this).direction == aPoint.direction)
+                {
+                    return tmpEdgeSlice;
+                }
+                else
+                    return null;
+            }
         }
             private Vector_Rectangle GetVectorRectangleFromDirection(Vector_Rectangle aPoint, int? aDir)
             {
@@ -698,7 +764,7 @@ namespace Migracja
             EdgeSlice actSlice = new EdgeSlice(aEdgeSliceList.parent);
             EdgeSlice firstSlice = actSlice;
             //1-pixelowy obiekt traktujemy inaczej
-            if (Count != 1)
+            //if (Count != 1)
             {
                 //kończymy jeśli trafiamy na początek, lub na 1-pixelowy obiekt
                 /*Debug.Assert(
@@ -706,16 +772,20 @@ namespace Migracja
                     aEdgeSliceList[0].vectorRectangleList(aEdgeSliceList.parent).Count == 0,
                     "aEdgeSliceList.Count: " + aEdgeSliceList.Count.ToString() + "vectorRectangleList: " +
                     aEdgeSliceList[0].vectorRectangleList(aEdgeSliceList.parent).Count.ToString());*/
-                if (GetSliceEdgeFromEdgePoint(startEdgePoint) == null)
+                EdgeSlice exisingSlice = GetSliceEdgeFromEdgePoint(startEdgePoint);
+                if (exisingSlice == null)
                 {
                     aEdgeSliceList.Add(aEdgeSliceList.NextKey(), actSlice);
                     actSlice.vectorRectangleList(aEdgeSliceList.parent)
                             .Add(actSlice.vectorRectangleList(aEdgeSliceList.parent).NextKey(), startEdgePoint);
-                    actSlice = startEdgePoint.edgeSlice;
+                    startEdgePoint.outerEdgeSlice = actSlice;
                 }
                 else
                 {
-                    aEdgeSliceList.Add(aEdgeSliceList.NextKey(), actSlice);
+                    aEdgeSliceList.Add(aEdgeSliceList.NextKey(), exisingSlice);
+                    //jeśli trafiliśmy na granicę, której możemy użyć, to skaczemy do ostatniego punktu
+                    prevEdgePoint = exisingSlice.GetLastSecondPoint();
+                    actSlice = null;
                 }
                 do
                 {
@@ -734,27 +804,41 @@ namespace Migracja
                     }*/
                     ;
                     nextEdgePoint = GetNextEdge(prevEdgePoint, ref arrivDir, aBlInnerBorder, aOuterGroup);
-                    //powstanie gdy nie możemy oddać następnej krawędzi, ale wyjątkikem jest gdy jest to pojedynczy pixel
-                    if ((nextEdgePoint == null) && (aEdgeSliceList.Count != 0))
-                        Debug.Assert(false, "Oddany edge jest nil (" + prevEdgePoint.vectorRectangle.p1.X.ToString() +
-                                            "," + prevEdgePoint.vectorRectangle.p1.Y.ToString() +
-                                            "), liczba znalezionych kreawędzi:" +
-                                            aEdgeSliceList.Count.ToString());
-                    if (OtherNeightbour(prevEdgePoint, nextEdgePoint))
+                    exisingSlice = GetSliceEdgeFromEdgePoint(nextEdgePoint);
+                    if (exisingSlice == null)
                     {
-                        prevEdgePoint.endingPoint = true;
-                        if (firstSlice != actSlice)
-                            actSlice.FillSimplifyVectorRectangleList();
-                        actSlice = new EdgeSlice(aEdgeSliceList.parent);
-                        aEdgeSliceList.Add(aEdgeSliceList.NextKey(), actSlice);
+                        if (actSlice == null) 
+                            actSlice = new EdgeSlice(aEdgeSliceList.parent);
+                        //powstanie gdy nie możemy oddać następnej krawędzi, ale wyjątkikem jest gdy jest to pojedynczy pixel
+                        if ((nextEdgePoint == null) && (aEdgeSliceList.Count != 0))
+                            Debug.Assert(false,
+                                         "Oddany edge jest nil (" + prevEdgePoint.vectorRectangle.p1.X.ToString() +
+                                         "," + prevEdgePoint.vectorRectangle.p1.Y.ToString() +
+                                         "), liczba znalezionych kreawędzi:" +
+                                         aEdgeSliceList.Count.ToString());
+                        if (OtherNeightbour(prevEdgePoint, nextEdgePoint))
+                        {
+                            prevEdgePoint.endingPoint = true;
+                            if (firstSlice != actSlice)
+                                actSlice.FillSimplifyVectorRectangleList();
+                            actSlice = new EdgeSlice(aEdgeSliceList.parent);
+                            aEdgeSliceList.Add(aEdgeSliceList.NextKey(), actSlice);
+                        }
+                        if (!nextEdgePoint.Eq(startEdgePoint))
+                        {
+                            actSlice.vectorRectangleList(aEdgeSliceList.parent)
+                                    .Add(actSlice.vectorRectangleList(aEdgeSliceList.parent).NextKey(), nextEdgePoint);
+                            nextEdgePoint.outerEdgeSlice = actSlice;
+                            //MakeUsed(nextEdgePoint aBlInnerBorder);
+                            prevEdgePoint = nextEdgePoint;
+                        }
                     }
-                    if (!nextEdgePoint.Eq(startEdgePoint))
+                    else
                     {
-                        actSlice.vectorRectangleList(aEdgeSliceList.parent)
-                                .Add(actSlice.vectorRectangleList(aEdgeSliceList.parent).NextKey(), nextEdgePoint);
-                        nextEdgePoint.edgeSlice = actSlice;
-                        //MakeUsed(nextEdgePoint aBlInnerBorder);
-                        prevEdgePoint = nextEdgePoint;
+                        aEdgeSliceList.Add(aEdgeSliceList.NextKey(), exisingSlice);
+                        //jeśli trafiliśmy na granicę, której możemy użyć, to skaczemy do ostatniego punktu
+                        prevEdgePoint = exisingSlice.GetLastSecondPoint();
+                        actSlice = null;
                     }
                 }
                 while (!nextEdgePoint.Eq(startEdgePoint));
@@ -762,7 +846,7 @@ namespace Migracja
                 firstSlice.FillSimplifyVectorRectangleList();
             }
                 //dla obiektu 1-pixelowego
-            else
+            /*else
             {
                 //dodajemy punkty graniczne do listy
                 actSlice.vectorRectangleList(aEdgeSliceList.parent)[0] = startEdgePoint;
@@ -772,7 +856,7 @@ namespace Migracja
                 actSlice.vectorRectangleList(aEdgeSliceList.parent)[3].endingPoint = true;
                 actSlice.FillSimplifyVectorRectangleList();
                 // MakeUsed(startEdgePoint aBlInnerBorder);
-            }
+            }*/
             //ostatni obiekt prevEdgePoint jest na powno końcowym
             prevEdgePoint.endingPoint = true;
             ;
@@ -790,7 +874,7 @@ namespace Migracja
                 }
             }
 
-            //tu powinno wyć wywołane upraszczanie granic wypełniające simplifiedVectorRectangleList dal każdefo fragmentu granicy
+            //tu powinno wyć wywołane upraszczanie granic wypełniające simplifiedVectorRectangleList dla każdego fragmentu granicy
 
             //dla uproszczenia niepocięta uproszczona granica dla grupy rectancli
             aEdgeSliceList.simplifiedVectorRectangleEdgePointFullList = new VectorRectangleEdgePointList();
