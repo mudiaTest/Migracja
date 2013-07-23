@@ -122,5 +122,22 @@ namespace Migracja
             }
             return result;
         }
+
+        internal static int OppositeDirection(int aDir)
+        {
+            return (Next(Next(aDir)));
+        }
+
+        internal static int OppositeDirection(int? aDir)
+        {
+            int result = 0;
+            if (aDir == null)
+                Debug.Assert(false, "Nie można wskazać przeciwnego kierunku dla wartości null");
+            else
+            {
+                result = OppositeDirection((int)aDir);
+            }
+            return result;
+        }
     }
 }

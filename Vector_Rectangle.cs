@@ -19,7 +19,10 @@ namespace Migracja
                          set{points.Add(3, value);}
         }
         //parent, o ile punkt jest częścią granicy
-        internal VectorRectangleEdgePoint parentVectorRectangleEdgePoint = null;
+        internal Dictionary<int, VectorRectangleEdgePoint> parentVectorRectangleEdgePointList = new Dictionary<int, VectorRectangleEdgePoint>() ;
+
+        //czy jest pierwszym punktem w grupie
+        internal bool firstInGroup = false;
 
         public Vector_Rectangle(Color aColor, Point aP1, Point aP2)
         {
@@ -93,6 +96,7 @@ namespace Migracja
             Vector_Rectangle result = new Vector_Rectangle(color, new Point(p1.X, p1.Y), new Point(p2.X, p2.Y));
             result.parentVectorGroup = parentVectorGroup;
             result.parentVectorGroupId = parentVectorGroupId;
+            result.firstInGroup = firstInGroup;
             return result;
         }
     }

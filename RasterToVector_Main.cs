@@ -22,6 +22,9 @@ namespace Migracja
             singleThreadFactory.GroupRect();
             datePrv = aFunct("'  GroupRect'", false, datePrv);
 
+            singleThreadFactory.SetFlagFirstInGroup();
+            datePrv = aFunct("'  SetFlagFirstInGroup'", false, datePrv);
+
             //wypełnianie informacją o kolorze
             singleThreadFactory.FillColorArr();
             datePrv = aFunct("'FillColorArr'", false, datePrv);

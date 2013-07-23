@@ -154,6 +154,25 @@ namespace Migracja
 
         }
 
+        internal void SetFlagFirstInGroup()
+        {
+            Dictionary<int, VectoredRectangleGroup> tmpGroupsDict = new Dictionary<int, VectoredRectangleGroup>();
+            Vector_Rectangle vectObj;
+            for (int y = 0; y < srcHeight; y++)
+            {
+                //perf.Start;
+                for (int x = 0; x < srcWidth; x++)
+                {
+                    vectObj = vectArr[x][y];
+                    if (!tmpGroupsDict.ContainsKey(vectObj.parentVectorGroup.lpGroup))
+                    {
+                        vectObj.firstInGroup = true;
+                        tmpGroupsDict.Add(vectObj.parentVectorGroup.lpGroup, vectObj.parentVectorGroup);
+                    }
+                }
+            }
+        }
+
         //DateTime d1 = DateTime.Now;
 
         //metoda pomocnicza dla FillColorArr
@@ -285,7 +304,7 @@ namespace Migracja
                 if ((int)Math.DivRem((long)i, (long)inMod, out dummy) == 0)
                     UpdateInfoAction("Tworzenie granicy dla grupy " + i.ToString() + "/" + (Count - 1).ToString());
                 i++;
-                vectGroup.MakeEdge(vectGroup.edgeSliceList);
+                vectGroup.MakeEdge(vectGroup.edgeSliceList, infoBoxUpdateFunct, false, 0);
             };            
         }
 
@@ -324,7 +343,7 @@ namespace Migracja
                         // vectGroupDown - grupa px będącego poniżej. Z niego zaczniemy budować  granicę wewnętrzną
                         vectGroupDown = this[colorPxDown.group];
                         // MakeEdges wybuduje granicę i wszystkie px powyżej punktów granicy ustawi used=true
-                        vectGroupDown.MakeEdge(list, true, colorPx.group);
+                        vectGroupDown.MakeEdge(list, infoBoxUpdateFunct, true, colorPx.group);
                         vectGroup.innerEdgesList.Add(vectGroup.innerEdgesList.NextKey(), list);
                     }
                 }

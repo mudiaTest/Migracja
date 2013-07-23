@@ -328,15 +328,15 @@ namespace Migracja
         }
 
         //tworzy krawędzie dla pojedynczego punktu
-        private void AddEdgePoint(VectorRectangleEdgePoint vectorRectangleEdgePoint, List<GeoPoint> aGeoArr,
+        private void AddEdgePoint(VectorRectangleEdgePoint aVectorRectangleEdgePoint, List<GeoPoint> aGeoArr,
                                   float aDpMultiX, float aDPMultiY, float aDpDisplaceX, float aDpDisplaceY,
                                   ColorPx[][] aColorArr, bool aBlOnlyFillColorArr)
         {
             //pobierany lewy górny róg rectanglai na jego podstawie będziemy tworzyć kolejne punkty polygonu
-            Point point = vectorRectangleEdgePoint.vectorRectangle.p1;
+            Point point = aVectorRectangleEdgePoint.vectorRectangle.p1;
             if (!aBlOnlyFillColorArr)
             {
-                switch (vectorRectangleEdgePoint.direction)
+                switch (aVectorRectangleEdgePoint.Direction())
                 {
                     case Cst.fromLeftToRight: aGeoArr.Add(new GeoPoint((point.X) * aDpMultiX + aDpDisplaceX, (point.Y) * aDPMultiY + aDpDisplaceY));
                         break;
@@ -347,8 +347,8 @@ namespace Migracja
                     case Cst.fromBottomToTop: aGeoArr.Add(new GeoPoint((point.X) * aDpMultiX + aDpDisplaceX, (point.Y + 1) * aDPMultiY + aDpDisplaceY)); 
                         break;
                 }
-                if (vectorRectangleEdgePoint.endingPoint)
-                    switch (vectorRectangleEdgePoint.direction)
+                if (aVectorRectangleEdgePoint.GroupsEndingPoint == this)
+                    switch (aVectorRectangleEdgePoint.Direction())
                     {
                         case Cst.fromLeftToRight: aGeoArr.Add(new GeoPoint((point.X + 1 ) * aDpMultiX + aDpDisplaceX, (point.Y) * aDPMultiY + aDpDisplaceY));
                             break;
