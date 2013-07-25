@@ -474,12 +474,25 @@ namespace Migracja
             Point nextP = aNextEdgePoint.vectorRectangle.p1;
             Vector_Rectangle tmpVectorRectanglePrv;
             Vector_Rectangle tmpVectorRectangleNext;
-            if (aNextEdgePoint.directionNull == Cst.noFromEdge || aPrevEdgePoint.directionNull == Cst.noFromEdge)
+
+            if (aPrevEdgePoint.directionNull == Cst.noFromEdge)
                 return false;
+            tmpVectorRectanglePrv = GetVectorRectangleFromDirection(aPrevEdgePoint.vectorRectangle, aPrevEdgePoint.Direction());
+
+            //jeśli jesteśmw w trakcie kontaktu z sąsiadem, to może sią zdarzyć trafiamy na jego początkowy wierzołek
+            if (aNextEdgePoint.Direction() == Cst.noFromEdge &&
+                aPrevEdgePoint.Direction() == Cst.fromRightToLeft &&
+                tmpVectorRectanglePrv.firstInGroup
+                )
+            {
+                return true;
+            }
+
+            if (aNextEdgePoint.directionNull == Cst.noFromEdge)
+                return false;           
+            tmpVectorRectangleNext = GetVectorRectangleFromDirection(aNextEdgePoint.vectorRectangle, aNextEdgePoint.Direction());
 
             //podstawowe sprawdzenie, to porównanie grup, bedacych "na zewnątrz" punktów tworzących granice.
-            tmpVectorRectanglePrv = GetVectorRectangleFromDirection(aPrevEdgePoint.vectorRectangle, aPrevEdgePoint.Direction());
-            tmpVectorRectangleNext = GetVectorRectangleFromDirection(aNextEdgePoint.vectorRectangle, aNextEdgePoint.Direction());
             if (tmpVectorRectanglePrv == null && tmpVectorRectangleNext == null)
                 result = false;
             else
@@ -505,17 +518,7 @@ namespace Migracja
                         Debug.Assert(false, "Nieznany kierunek aArrivDir: " + aPrevEdgePoint.directionNull.ToString());
                         return false;
                 }
-            }
-
-            //jeśli jesteśmw w trakcie kontaktu z sąsiadem, to może sią zdarzyć trafiamy na jego początkowy wierzołek
-            if (!result &&
-                aNextEdgePoint.Direction() == Cst.noFromEdge &&
-                aPrevEdgePoint.Direction() == Cst.fromRightToLeft &&
-                tmpVectorRectanglePrv.firstInGroup
-                )
-            {
-                result = true;
-            }
+            }            
             return result;
         }
             internal bool IsTheSameNeightbour(Point aP1, Point aP2)
@@ -611,7 +614,7 @@ namespace Migracja
                     {
                         actSlice.vectorRectangleList(aEdgeSliceList.parent)
                                 .Add(actSlice.vectorRectangleList(aEdgeSliceList.parent).NextKey(), nextEdgePoint);
-                        nextEdgePoint.vectorRectangle.parentVectorRectangleEdgePointList.Add(nextEdgePoint.Direction(), nextEdgePoint);
+                         nextEdgePoint.vectorRectangle.parentVectorRectangleEdgePointList.Add(nextEdgePoint.Direction(), nextEdgePoint);
                         nextEdgePoint.edgeSlice = actSlice;
                         //MakeUsed(nextEdgePoint aBlInnerBorder);
                         prevEdgePoint = nextEdgePoint;

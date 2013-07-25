@@ -267,7 +267,7 @@ namespace Migracja
 
         internal VectorRectangleEdgePoint GetLastSecondPoint()
         {
-            return vectorRectangleList(parentVectoredRectangleGroupSecond)[fVectorRectangleListFirst.Count - 1];
+            return vectorRectangleList(parentVectoredRectangleGroupSecond)[fVectorRectangleListSecond.Count - 1];
         }
 
         internal VectorRectangleEdgePoint GetEdgeSliceForPointFromFirst(Point aPoint/*, VectoredRectangleGroup aGroup*/)
