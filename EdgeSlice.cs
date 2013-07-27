@@ -52,11 +52,11 @@ namespace Migracja
             {
                 //zakładamy, że aPrvPoint jest null gdy 
                 // - jest to pierwszy punkt z listy
-                // - poprzedni punkt aPoint miał Direction = Cst.noFromEdge (wewnętrzna cześć granicy)
-                //W obu przypadkach nie ma potrzeby dla dodawania punktu z granicą Cst.noFromEdge
+                // - poprzedni punkt aPoint miał Direction = Dir.noFromEdge (wewnętrzna cześć granicy)
+                //W obu przypadkach nie ma potrzeby dla dodawania punktu z granicą Dir.noFromEdge
                 if (aPrvPoint != null && aPrvPoint.Direction() == Dir.NextCheck(result.Direction()))
                     aVectorRectangleListSecond.Add(aVectorRectangleListSecond.NextKey(),
-                                                   new VectorRectangleEdgePoint(result.vectorRectangle, Cst.noFromEdge)
+                                                   new VectorRectangleEdgePoint(result.vectorRectangle, Dir.noFromEdge)
                                                    );
                 aVectorRectangleListSecond.Add(aVectorRectangleListSecond.NextKey(), result);
             }
@@ -68,27 +68,27 @@ namespace Migracja
                 Point tmpPoint;
                 int tmpDirection;
                 Vector_Rectangle[][] tmpArr = parentVectoredRectangleGroupFirst.parentMapFactory.vectArr;
-                if (aPoint.Direction() == Cst.fromLeftToRight)
+                if (aPoint.Direction() == Dir.fromLeftToRight)
                 {
                     tmpPoint = new Point(aPoint.vectorRectangle.p1.X, aPoint.vectorRectangle.p1.Y - 1);
-                    tmpDirection = Cst.fromRightToLeft;
+                    tmpDirection = Dir.fromRightToLeft;
                 }
-                else if (aPoint.Direction() == Cst.fromRightToLeft)
+                else if (aPoint.Direction() == Dir.fromRightToLeft)
                 {
                     tmpPoint = new Point(aPoint.vectorRectangle.p1.X, aPoint.vectorRectangle.p1.Y + 1);
-                    tmpDirection = Cst.fromLeftToRight;
+                    tmpDirection = Dir.fromLeftToRight;
                 }
-                else if (aPoint.Direction() == Cst.fromTopToBottom)
+                else if (aPoint.Direction() == Dir.fromTopToBottom)
                 {
                     tmpPoint = new Point(aPoint.vectorRectangle.p1.X + 1, aPoint.vectorRectangle.p1.Y);
-                    tmpDirection = Cst.fromBottomToTop;
+                    tmpDirection = Dir.fromBottomToTop;
                 }
-                else if (aPoint.Direction() == Cst.fromBottomToTop)
+                else if (aPoint.Direction() == Dir.fromBottomToTop)
                 {
                     tmpPoint = new Point(aPoint.vectorRectangle.p1.X - 1, aPoint.vectorRectangle.p1.Y);
-                    tmpDirection = Cst.fromTopToBottom;
+                    tmpDirection = Dir.fromTopToBottom;
                 }
-                else if (aPoint.Direction() == Cst.noFromEdge)
+                else if (aPoint.Direction() == Dir.noFromEdge)
                 {
                     return null;
                 }
@@ -281,6 +281,92 @@ namespace Migracja
                     result = tmpEdgePointList[i];
             }
             return result;
+        }
+    }
+
+    internal class EdgeSliceList : Dictionary<int, EdgeSlice>
+    {
+        private int fmaxKey;
+
+        internal int maxKey
+        {
+            get { return fmaxKey; }
+        }
+
+        internal int NextKey()
+        {
+            return ++fmaxKey;
+        }
+
+        public EdgeSliceList(VectoredRectangleGroup aParent)
+        {
+            fmaxKey = -1;
+            parent = aParent;
+        }
+
+        public void ClearReset()
+        {
+            Clear();
+            fmaxKey = -1;
+        }
+
+        internal void DecreaseMaxKey()
+        {
+            fmaxKey--;
+        }
+
+        internal VectorRectangleEdgePointList vectorRectangleEdgePointFullList = null;
+        internal VectorRectangleEdgePointList simplifiedVectorRectangleEdgePointFullList = null;
+
+        private int? edgeVectRectanglesCount = null;
+        private int? simplifiedEdgeVectRectanglesCount = null;
+
+        internal int CountEdgeVectRectangles()
+        {
+            if (edgeVectRectanglesCount == null)
+            {
+                edgeVectRectanglesCount = 0;
+                foreach (KeyValuePair<int, EdgeSlice> pair in this)
+                {
+                    edgeVectRectanglesCount += pair.Value.vectorRectangleList(parent).Count;
+                }
+            }
+            return (int)edgeVectRectanglesCount;
+        }
+
+        internal int CountSimplifiedEdgeVectRectangles()
+        {
+            if (simplifiedEdgeVectRectanglesCount == null)
+            {
+                simplifiedEdgeVectRectanglesCount = 0;
+                foreach (KeyValuePair<int, EdgeSlice> pair in this)
+                {
+                    simplifiedEdgeVectRectanglesCount += pair.Value.simplifiedVectorRectangleList(parent).Count;
+                }
+            }
+            return (int)simplifiedEdgeVectRectanglesCount;
+        }
+
+        internal VectoredRectangleGroup parent = null;
+    }
+
+    class EdgeList : Dictionary<int, EdgeSliceList>
+    {
+        private int fMaxKey;
+
+        internal int maxKey
+        {
+            get { return fMaxKey; }
+        }
+
+        internal int NextKey()
+        {
+            return ++fMaxKey;
+        }
+
+        public EdgeList()
+        {
+            fMaxKey = -1;
         }
     }
 }

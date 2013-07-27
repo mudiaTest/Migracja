@@ -10,7 +10,6 @@ namespace Migracja
     //generyczny obiekt wektorowy
     class Vector_Gen
     {
-
         //lista wierzchołków obeiktu
         protected Dictionary<int, Point> points;
         //kolor wypełniający obiekt
@@ -19,8 +18,6 @@ namespace Migracja
         public VectoredRectangleGroup parentVectorGroup{get; set;}
         //numer grupy (w liście grup), która posiada dany obiekt vektorowy
         public int parentVectorGroupId { get; set; }
-
-
 
         public Vector_Gen()
         {

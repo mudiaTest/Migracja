@@ -68,6 +68,7 @@ namespace Migracja
             RasterToVectorFactory separateThreadFactory = new RasterToVectorFactory();
         }
     }
+
     class RasterToVectorFactory : Dictionary<int, Vector_Gen>
     {
         /*private float fgeoLeftUpX;
