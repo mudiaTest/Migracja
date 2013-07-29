@@ -20,6 +20,11 @@ namespace Migracja
 
         private VectorRectangleEdgePointList vectorRectangleListSecond
         {
+            //uwagi odnośnie punktów z kierunkiem Dir.noFromEdge. Z ich natury wynika, że jeśli taki punkt 
+            // -pojawi się w fVectorRectangleListFirst, to nie powinien być przenoszony do second - to jest sytuacja 
+            //  gdy z "wewnętrnego" konta budujemy " wypukły"
+            //- przypadki z Dir.noFromEdge na końcach nas nie interesują
+            //- przypadki, gdy należy dodać dodatkowy punkit z kierunkiem Dir.noFromEdge sa obsługiwane przez AddOppositeDirectionEdgePoint 
             get
             {
                 VectorRectangleEdgePoint edgePoint = null;
@@ -30,12 +35,13 @@ namespace Migracja
                     for (int i = fVectorRectangleListFirst.Count - 1; i >= 0; i--)
                     {
                         // edgePoint = GetOppositeDirectionEdgePoint(fVectorRectangleListFirst[i]);                      
-                        //fVectorRectangleListSecond.Add(fVectorRectangleListSecond.NextKey(), edgePoint);                
-                        edgePoint = AddOppositeDirectionEdgePoint(fVectorRectangleListFirst[i], prvEdgePoint, fVectorRectangleListSecond);
+                        //fVectorRectangleListSecond.Add(fVectorRectangleListSecond.NextKey(), edgePoint);  
+                        if (fVectorRectangleListFirst[i].directionNull != Dir.noFromEdge)
+                            edgePoint = AddOppositeDirectionEdgePoint(fVectorRectangleListFirst[i], prvEdgePoint, fVectorRectangleListSecond);
                         if (edgePoint != null)
                             prvEdgePoint = edgePoint;
                     }
-                    //ostatni punkt opisyjemy jako końcowy
+                    //ostatni punkt opisujemy jako końcowy
                     Debug.Assert(parentVectoredRectangleGroupSecond != null, "Podobiekt parentVectoredRectangleGroupSecond jest null.");
                     prvEdgePoint.GroupsEndingPoint = parentVectoredRectangleGroupSecond;
                 }
@@ -43,6 +49,7 @@ namespace Migracja
             }
         }
 
+        //dodajemy następny punkt do listy poprzedzając go dodatkowym punktema kierunkiem Dir.noFromEdge jeśli to koniecznie
         private VectorRectangleEdgePoint AddOppositeDirectionEdgePoint(VectorRectangleEdgePoint aPoint,
                                                    VectorRectangleEdgePoint aPrvPoint,
                                                    VectorRectangleEdgePointList aVectorRectangleListSecond)
@@ -54,7 +61,7 @@ namespace Migracja
                 // - jest to pierwszy punkt z listy
                 // - poprzedni punkt aPoint miał Direction = Dir.noFromEdge (wewnętrzna cześć granicy)
                 //W obu przypadkach nie ma potrzeby dla dodawania punktu z granicą Dir.noFromEdge
-                if (aPrvPoint != null && aPrvPoint.Direction() == Dir.NextCheck(result.Direction()))
+                if (aPrvPoint != null && Dir.NextCheck(aPrvPoint.Direction()) == result.Direction())
                     aVectorRectangleListSecond.Add(aVectorRectangleListSecond.NextKey(),
                                                    new VectorRectangleEdgePoint(result.vectorRectangle, Dir.noFromEdge)
                                                    );
