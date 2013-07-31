@@ -413,6 +413,11 @@ namespace Migracja
             Focus();
         }
 
+        private void destinationPB_Click(object sender, EventArgs e)
+        {
+            GetVectRectData(e as MouseEventArgs);
+        }
+
 
 
     }

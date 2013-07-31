@@ -46,6 +46,7 @@
             this.loadDialog = new System.Windows.Forms.OpenFileDialog();
             this.panel2 = new System.Windows.Forms.Panel();
             this.panel4 = new System.Windows.Forms.Panel();
+            this.panel9 = new System.Windows.Forms.Panel();
             this.panel8 = new System.Windows.Forms.Panel();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
@@ -66,10 +67,10 @@
             this.chkBoxTestOptions = new System.Windows.Forms.CheckedListBox();
             this.btnRefreshResultImg = new System.Windows.Forms.Button();
             this.btnMainThread = new System.Windows.Forms.Button();
-            this.btnStopR2V = new System.Windows.Forms.Button();
             this.gbThreadChoice = new System.Windows.Forms.GroupBox();
             this.rbSeparateThread = new System.Windows.Forms.RadioButton();
             this.rbMainThread = new System.Windows.Forms.RadioButton();
+            this.btnStopR2V = new System.Windows.Forms.Button();
             this.btnStartR2V = new System.Windows.Forms.Button();
             this.btnSeparateThread = new System.Windows.Forms.Button();
             this.panel3 = new System.Windows.Forms.Panel();
@@ -86,7 +87,6 @@
             this.sourcePanel = new System.Windows.Forms.Panel();
             this.sourcePB = new System.Windows.Forms.PictureBox();
             this.saveDialog = new System.Windows.Forms.SaveFileDialog();
-            this.panel9 = new System.Windows.Forms.Panel();
             this.menuMain.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel4.SuspendLayout();
@@ -244,6 +244,14 @@
             this.panel4.Size = new System.Drawing.Size(315, 517);
             this.panel4.TabIndex = 26;
             this.panel4.Click += new System.EventHandler(this.w);
+            // 
+            // panel9
+            // 
+            this.panel9.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel9.Location = new System.Drawing.Point(156, 43);
+            this.panel9.Name = "panel9";
+            this.panel9.Size = new System.Drawing.Size(152, 81);
+            this.panel9.TabIndex = 30;
             // 
             // panel8
             // 
@@ -464,16 +472,6 @@
             this.btnMainThread.UseVisualStyleBackColor = true;
             this.btnMainThread.Click += new System.EventHandler(this.btnMainThread_Click);
             // 
-            // btnStopR2V
-            // 
-            this.btnStopR2V.Location = new System.Drawing.Point(111, 39);
-            this.btnStopR2V.Name = "btnStopR2V";
-            this.btnStopR2V.Size = new System.Drawing.Size(75, 23);
-            this.btnStopR2V.TabIndex = 15;
-            this.btnStopR2V.Text = "Stop R2V";
-            this.btnStopR2V.UseVisualStyleBackColor = true;
-            this.btnStopR2V.Click += new System.EventHandler(this.btnStopR2V_Click);
-            // 
             // gbThreadChoice
             // 
             this.gbThreadChoice.Controls.Add(this.rbSeparateThread);
@@ -509,6 +507,16 @@
             this.rbMainThread.TabStop = true;
             this.rbMainThread.Text = "MainThread";
             this.rbMainThread.UseVisualStyleBackColor = true;
+            // 
+            // btnStopR2V
+            // 
+            this.btnStopR2V.Location = new System.Drawing.Point(111, 39);
+            this.btnStopR2V.Name = "btnStopR2V";
+            this.btnStopR2V.Size = new System.Drawing.Size(75, 23);
+            this.btnStopR2V.TabIndex = 15;
+            this.btnStopR2V.Text = "Stop R2V";
+            this.btnStopR2V.UseVisualStyleBackColor = true;
+            this.btnStopR2V.Click += new System.EventHandler(this.btnStopR2V_Click);
             // 
             // btnStartR2V
             // 
@@ -654,6 +662,7 @@
             this.destinationPB.Size = new System.Drawing.Size(152, 98);
             this.destinationPB.TabIndex = 14;
             this.destinationPB.TabStop = false;
+            this.destinationPB.Click += new System.EventHandler(this.destinationPB_Click);
             this.destinationPB.MouseDown += new System.Windows.Forms.MouseEventHandler(this.destinationPB_MouseDown);
             this.destinationPB.MouseMove += new System.Windows.Forms.MouseEventHandler(this.destinationPB_MouseMove);
             this.destinationPB.MouseUp += new System.Windows.Forms.MouseEventHandler(this.destinationPB_MouseUp);
@@ -680,14 +689,6 @@
             this.sourcePB.MouseLeave += new System.EventHandler(this.sourcePB_MouseLeave);
             this.sourcePB.MouseMove += new System.Windows.Forms.MouseEventHandler(this.sourcePB_MouseMove);
             this.sourcePB.MouseUp += new System.Windows.Forms.MouseEventHandler(this.sourcePB_MouseUp);
-            // 
-            // panel9
-            // 
-            this.panel9.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel9.Location = new System.Drawing.Point(156, 43);
-            this.panel9.Name = "panel9";
-            this.panel9.Size = new System.Drawing.Size(152, 81);
-            this.panel9.TabIndex = 30;
             // 
             // MainWindow
             // 

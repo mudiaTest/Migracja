@@ -11,5 +11,7 @@ namespace Migracja
         internal const string progName = "Ras2Vec";
 
         internal const int maxZoom = 10;
+
+        internal const char NL = '\n';
     }   
 }

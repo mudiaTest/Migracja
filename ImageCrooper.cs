@@ -38,6 +38,8 @@ namespace Migracja
             }
         public int left;
         public int top;
+        internal int srcShiftX;
+        internal int srcShiftY;
 
         public Crooper(Size aPanelSize, int aSrcBmpHeight, int aSrcBmpWidth)
         {
@@ -128,10 +130,12 @@ namespace Migracja
             Rectangle rect = GetSourceRectangle(aScale);
             Bitmap result;
             Rectangle resultRect = GetDestinationRectangle(aScale, rect);
+            srcShiftX = resultRect.X;
+            srcShiftY = resultRect.Y;
 
             //finalna bitmapa o odpowiednim rozmiarze
             result = new Bitmap(3 * panelSize.Width, 3 * panelSize.Height);
-            //ustawia, że result będzie płótnem graphics
+            //ustawia, że result będzie płótnem graphicss
             Graphics graphics = Graphics.FromImage(result);
             //ustawia sposób zmiękczania przy powiększaniu - NN da brak zmiękczania
             graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
@@ -170,6 +174,9 @@ namespace Migracja
             Rectangle rect = GetSourceRectangle(aScale);
             Bitmap result;
             Rectangle resultRect = GetDestinationRectangle(aScale, rect);
+
+            srcShiftX = resultRect.X;
+            srcShiftY = resultRect.Y;
             //Rectangle resultRect = new Rectangle(0, 0, (int)Math.Round(srcBmpWidth * aScale), (int)Math.Round(srcBmpHeight * aScale));
 
             //finalna bitmapa o odpowiednim rozmiarze

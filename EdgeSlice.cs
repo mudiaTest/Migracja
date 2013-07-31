@@ -289,6 +289,36 @@ namespace Migracja
             }
             return result;
         }
+
+        internal String Info()
+        {
+            String result;
+            result = GetHashCode().ToString();
+            //VectorRectangleEdgePointList tmpList;
+            result += Cst.NL;
+            if (parentVectoredRectangleGroupFirst != null)
+            {
+                result += "First:  ";
+                foreach (KeyValuePair<int, VectorRectangleEdgePoint> pair in fVectorRectangleListFirst)
+                {
+                    VectorRectangleEdgePoint point = pair.Value;
+                    result += "(" + point.vectorRectangle.p1.X.ToString() + "," + point.vectorRectangle.p1.Y.ToString() +
+                              ") " + point.directionNull.ToString() + "; ";
+                }
+            }
+            result += Cst.NL;
+            if (parentVectoredRectangleGroupSecond != null)
+            {
+                result += "Second: ";
+                foreach (KeyValuePair<int, VectorRectangleEdgePoint> pair in fVectorRectangleListSecond)
+                {
+                    VectorRectangleEdgePoint point = pair.Value;
+                    result += "(" + point.vectorRectangle.p1.X.ToString() + "," + point.vectorRectangle.p1.Y.ToString() +
+                              ") " + point.directionNull.ToString() + "; ";
+                }
+            }
+            return result;
+        }
     }
 
     internal class EdgeSliceList : Dictionary<int, EdgeSlice>
