@@ -370,6 +370,8 @@ namespace Migracja
             //podstawowe sprawdzenie, to porównanie grup, bedacych "na zewnątrz" punktów tworzących granice.
             if (tmpVectorRectanglePrv == null && tmpVectorRectangleNext == null)
                 result = false;
+            else if (tmpVectorRectanglePrv == null || tmpVectorRectangleNext == null)
+                result = true;
             else
                 result = !IsTheSameNeightbour(tmpVectorRectanglePrv.p1, tmpVectorRectangleNext.p1);
 
