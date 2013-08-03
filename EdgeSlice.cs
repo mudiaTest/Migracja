@@ -57,6 +57,17 @@ namespace Migracja
             VectorRectangleEdgePoint result = GetOppositeDirectionEdgePoint(aPoint);
             if (result != null)
             {
+                result.edgeSlice = this;
+                //na początku tworzenia granicy dodaję 
+                /*if (result.Direction() == Dir.fromLeftToRight &&
+                    result.vectorRectangle.parentVectorRectangleEdgePointList.ContainsKey(result.Direction()))
+                {
+                    //to jes
+                    if (result.vectorRectangle.parentVectorRectangleEdgePointList[result.Direction()]).EdgeList == null)
+
+                        result.vectorRectangle.parentVectorRectangleEdgePointList.Remove(result.Direction());
+                } */       
+                result.vectorRectangle.parentVectorRectangleEdgePointList.Add(result.Direction(), result);                        
                 //zakładamy, że aPrvPoint jest null gdy 
                 // - jest to pierwszy punkt z listy
                 // - poprzedni punkt aPoint miał Direction = Dir.noFromEdge (wewnętrzna cześć granicy)
@@ -298,7 +309,7 @@ namespace Migracja
             result += Cst.NL;
             if (parentVectoredRectangleGroupFirst != null)
             {
-                result += "First:  ";
+                result += "  First:  ";
                 foreach (KeyValuePair<int, VectorRectangleEdgePoint> pair in fVectorRectangleListFirst)
                 {
                     VectorRectangleEdgePoint point = pair.Value;
@@ -309,13 +320,17 @@ namespace Migracja
             result += Cst.NL;
             if (parentVectoredRectangleGroupSecond != null)
             {
-                result += "Second: ";
+                result += "  Second: ";
                 foreach (KeyValuePair<int, VectorRectangleEdgePoint> pair in fVectorRectangleListSecond)
                 {
                     VectorRectangleEdgePoint point = pair.Value;
                     result += "(" + point.vectorRectangle.p1.X.ToString() + "," + point.vectorRectangle.p1.Y.ToString() +
                               ") " + point.directionNull.ToString() + "; ";
                 }
+            }
+            else
+            {
+                result += "  Second: ---";
             }
             return result;
         }

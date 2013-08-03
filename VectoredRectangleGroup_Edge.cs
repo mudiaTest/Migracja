@@ -420,7 +420,7 @@ namespace Migracja
             aEdgeSliceList.ClearReset();
             //startEdgePoint to pierwszy punkt na liście, bo idziemy od lewej strony w najwyższym wierszu
             VectorRectangleEdgePoint startEdgePoint = new VectorRectangleEdgePoint(this[0], Dir.fromLeftToRight);
-            this[0].parentVectorRectangleEdgePointList.Add(startEdgePoint.Direction(), startEdgePoint);
+            
             VectorRectangleEdgePoint prevEdgePoint = startEdgePoint;
             int arrivDir = Dir.fromLeftToRight; //zaczynamy od max lewego ponktu na górnej linji
             //Każemy zacząć szukanie od prawej
@@ -444,6 +444,7 @@ namespace Migracja
                 actSlice.vectorRectangleList(aEdgeSliceList.parent)
                         .Add(actSlice.vectorRectangleList(aEdgeSliceList.parent).NextKey(), startEdgePoint);
                 startEdgePoint.edgeSlice = actSlice;
+                this[0].parentVectorRectangleEdgePointList.Add(startEdgePoint.Direction(), startEdgePoint);
             }
             //jeśli jest odpowiednia granica
             else
@@ -506,7 +507,6 @@ namespace Migracja
                     if (!prevEdgePoint.Eq(startEdgePoint))
                     {
                         aEdgeSliceList.Add(aEdgeSliceList.NextKey(), exisingSlice);
-                        break;
                     }
                     actSlice = null;
                 }

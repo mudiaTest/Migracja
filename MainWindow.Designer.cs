@@ -310,7 +310,7 @@
             // 
             // reloadSrcMapBtn
             // 
-            this.reloadSrcMapBtn.Location = new System.Drawing.Point(193, 293);
+            this.reloadSrcMapBtn.Location = new System.Drawing.Point(193, 266);
             this.reloadSrcMapBtn.Name = "reloadSrcMapBtn";
             this.reloadSrcMapBtn.Size = new System.Drawing.Size(112, 23);
             this.reloadSrcMapBtn.TabIndex = 26;
@@ -320,9 +320,11 @@
             // 
             // infoBox
             // 
-            this.infoBox.Location = new System.Drawing.Point(5, 326);
+            this.infoBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.infoBox.Location = new System.Drawing.Point(5, 299);
             this.infoBox.Name = "infoBox";
-            this.infoBox.Size = new System.Drawing.Size(295, 178);
+            this.infoBox.Size = new System.Drawing.Size(295, 209);
             this.infoBox.TabIndex = 25;
             this.infoBox.Text = "";
             // 
@@ -428,7 +430,7 @@
             // 
             // loadSrcMapBtn
             // 
-            this.loadSrcMapBtn.Location = new System.Drawing.Point(89, 293);
+            this.loadSrcMapBtn.Location = new System.Drawing.Point(89, 266);
             this.loadSrcMapBtn.Name = "loadSrcMapBtn";
             this.loadSrcMapBtn.Size = new System.Drawing.Size(98, 23);
             this.loadSrcMapBtn.TabIndex = 14;
@@ -446,7 +448,7 @@
             "Edge (polygons) / Grid (rectangles)",
             "Kolor testowy",
             "Uproszczona krawędź"});
-            this.chkBoxTestOptions.Location = new System.Drawing.Point(8, 225);
+            this.chkBoxTestOptions.Location = new System.Drawing.Point(8, 198);
             this.chkBoxTestOptions.Name = "chkBoxTestOptions";
             this.chkBoxTestOptions.Size = new System.Drawing.Size(297, 64);
             this.chkBoxTestOptions.TabIndex = 10;
@@ -454,7 +456,7 @@
             // 
             // btnRefreshResultImg
             // 
-            this.btnRefreshResultImg.Location = new System.Drawing.Point(8, 293);
+            this.btnRefreshResultImg.Location = new System.Drawing.Point(8, 266);
             this.btnRefreshResultImg.Name = "btnRefreshResultImg";
             this.btnRefreshResultImg.Size = new System.Drawing.Size(75, 23);
             this.btnRefreshResultImg.TabIndex = 16;
@@ -464,7 +466,7 @@
             // 
             // btnMainThread
             // 
-            this.btnMainThread.Location = new System.Drawing.Point(207, 164);
+            this.btnMainThread.Location = new System.Drawing.Point(207, 137);
             this.btnMainThread.Name = "btnMainThread";
             this.btnMainThread.Size = new System.Drawing.Size(99, 23);
             this.btnMainThread.TabIndex = 11;
@@ -478,7 +480,7 @@
             this.gbThreadChoice.Controls.Add(this.rbMainThread);
             this.gbThreadChoice.Controls.Add(this.btnStopR2V);
             this.gbThreadChoice.Controls.Add(this.btnStartR2V);
-            this.gbThreadChoice.Location = new System.Drawing.Point(8, 154);
+            this.gbThreadChoice.Location = new System.Drawing.Point(8, 127);
             this.gbThreadChoice.Margin = new System.Windows.Forms.Padding(0);
             this.gbThreadChoice.Name = "gbThreadChoice";
             this.gbThreadChoice.Padding = new System.Windows.Forms.Padding(0);
@@ -530,7 +532,7 @@
             // 
             // btnSeparateThread
             // 
-            this.btnSeparateThread.Location = new System.Drawing.Point(207, 192);
+            this.btnSeparateThread.Location = new System.Drawing.Point(207, 165);
             this.btnSeparateThread.Name = "btnSeparateThread";
             this.btnSeparateThread.Size = new System.Drawing.Size(99, 23);
             this.btnSeparateThread.TabIndex = 13;
